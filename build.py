@@ -149,7 +149,7 @@ button.ghost{border-color:var(--line);background:#fff}
 .label small{font-weight:500;color:var(--muted)}
 video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:contain;border-radius:10px}
 .cross video{outline:2px solid var(--accent);outline-offset:-2px}
-.audio{margin-top:8px;width:100%}
+.hint{font-size:12px;color:var(--muted);margin:0 0 14px}
 
 .bib{
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;
@@ -283,12 +283,13 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     selected by a reproducible sync + reconstruction gate and visual farthest-point sampling—not a hand-picked top-20.
     Each case shows source, same-audio reconstruction, and replacement-speech edit.
   </p>
+  <p class="hint">Clips autoplay muted when scrolled into view (~3.4&nbsp;s, looped). Use the controls or “Unmute” for replacement speech audio.</p>
   <div class="toolbar">
     <button class="filter active" data-lang="all">All 20</button>
     <button class="filter" data-lang="en">English</button>
     <button class="filter" data-lang="zh">Chinese</button>
     <button class="ghost" id="mute">Unmute videos</button>
-    <button class="sync" id="play">Play visible videos</button>
+    <button class="sync" id="play">Replay visible</button>
   </div>
   <main id="cases"></main>
 </div></section>
@@ -314,8 +315,24 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 const DATA = __DATA__;
 const root = document.getElementById('cases');
 let muted = true;
+let io = null;
 function esc(x){
   return String(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function wireAutoplay(){
+  if(io) io.disconnect();
+  io = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      const v = en.target;
+      if(en.isIntersecting && en.intersectionRatio >= 0.35){
+        v.muted = muted;
+        v.play().catch(()=>{});
+      }else{
+        v.pause();
+      }
+    });
+  }, {threshold:[0,0.35,0.7]});
+  document.querySelectorAll('#cases video').forEach(v=>io.observe(v));
 }
 function render(lang='all'){
   root.innerHTML='';
@@ -323,9 +340,12 @@ function render(lang='all'){
     const m=x.metrics;
     const el=document.createElement('section');
     el.className='case';
-    el.innerHTML=`<div class="case-head"><div class="number">${String(x.rank).padStart(2,'0')}</div><div><div class="title">${esc(x.lang.toUpperCase())} · ${esc(x.age_group)} · ${esc(x.gender_group)}</div><div class="prompt" title="${esc(x.prompt)}">${esc(x.prompt)}</div></div><div class="metrics"><div class="metric"><b>${m.cross_sync_c.toFixed(2)}</b>Cross Sync-C</div><div class="metric"><b>${m.same_ssim.toFixed(3)}</b>Same SSIM</div><div class="metric"><b>${m.cross_sync_d.toFixed(2)}</b>Cross Sync-D</div></div></div><div class="grid"><div class="cell"><div class="label">Source <small>original</small></div><video muted loop playsinline preload="metadata" src="${x.files.source}"></video></div><div class="cell"><div class="label">Same audio <small>reconstruction</small></div><video muted loop playsinline preload="metadata" src="${x.files.same}"></video><audio class="audio" controls preload="none" src="${x.files.audio_same}"></audio></div><div class="cell cross"><div class="label">Replacement <small>CausalDub</small></div><video muted loop playsinline preload="metadata" src="${x.files.cross}"></video><audio class="audio" controls preload="none" src="${x.files.audio_cross}"></audio></div></div>`;
+    const vattrs=`controls muted autoplay loop playsinline preload="auto"`;
+    el.innerHTML=`<div class="case-head"><div class="number">${String(x.rank).padStart(2,'0')}</div><div><div class="title">${esc(x.lang.toUpperCase())} · ${esc(x.age_group)} · ${esc(x.gender_group)}</div><div class="prompt" title="${esc(x.prompt)}">${esc(x.prompt)}</div></div><div class="metrics"><div class="metric"><b>${m.cross_sync_c.toFixed(2)}</b>Cross Sync-C</div><div class="metric"><b>${m.same_ssim.toFixed(3)}</b>Same SSIM</div><div class="metric"><b>${m.cross_sync_d.toFixed(2)}</b>Cross Sync-D</div></div></div><div class="grid"><div class="cell"><div class="label">Source <small>original</small></div><video ${vattrs} src="${x.files.source}"></video></div><div class="cell"><div class="label">Same audio <small>reconstruction</small></div><video ${vattrs} src="${x.files.same}"></video></div><div class="cell cross"><div class="label">Replacement <small>CausalDub</small></div><video ${vattrs} src="${x.files.cross}"></video></div></div>`;
     root.appendChild(el);
   });
+  document.querySelectorAll('#cases video').forEach(v=>{v.muted=muted;});
+  wireAutoplay();
 }
 document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
@@ -334,11 +354,13 @@ document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{
 });
 document.getElementById('mute').onclick=()=>{
   muted=!muted;
-  document.querySelectorAll('video').forEach(v=>v.muted=muted);
+  document.querySelectorAll('#cases video').forEach(v=>{v.muted=muted; if(!muted) v.play().catch(()=>{});});
   document.getElementById('mute').textContent=muted?'Unmute videos':'Mute videos';
 };
 document.getElementById('play').onclick=()=>document.querySelectorAll('#cases video').forEach(v=>{
-  v.currentTime=0; v.play().catch(()=>{});
+  const r=v.getBoundingClientRect();
+  const vis=r.top<window.innerHeight && r.bottom>0;
+  if(vis){ v.currentTime=0; v.muted=muted; v.play().catch(()=>{}); }
 });
 render();
 </script>
