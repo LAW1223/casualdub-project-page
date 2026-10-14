@@ -1,6 +1,6 @@
 # CausalDub Project Page
 
-Static results page for **CausalDub: Distilling Full-Context Lip Editing into a Two-Step Causal Model** (anonymous CVPR submission).
+Static results page for **CausalDub: Distilling Full-Context Lip Editing into a Two-Step Causal Model**.
 
 ## View locally
 
