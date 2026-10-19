@@ -13,8 +13,8 @@ HTML = r'''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CausalDub — Two-Step Causal Lip Editing</title>
-<meta name="description" content="CausalDub distills a full-context lip editor into a two-step block-causal model with one audio branch per block.">
+<title>CausalDub — Guided Response Distillation for Causal Video Dubbing</title>
+<meta name="description" content="CausalDub is a causal source-video dubbing editor trained by guided response distillation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,550;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -184,11 +184,10 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 <header class="hero"><div class="wrap">
   <div class="eyebrow">Source-video lip editing</div>
   <p class="hero-brand">CausalDub</p>
-  <h2>Full-context lip editing, distilled into two causal steps.</h2>
+  <h2>Guided response distillation for causal video dubbing.</h2>
   <p class="lead">
-    Edit only the mouth of a source video to follow replacement speech—while preserving
-    identity, pose, expression, lighting, and non-mouth motion—with two denoising
-    evaluations and one audio branch per causal block.
+    Follow replacement speech while preserving identity, pose, and recorded motion
+    with two denoising updates, one audio branch, and bounded generated state.
   </p>
   <div class="cta">
     <a class="btn btn-primary" href="#videos">Watch results</a>
@@ -196,9 +195,9 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     <a class="btn btn-ghost" href="#cite">BibTeX</a>
   </div>
   <div class="hero-visual">
-    <img src="media/teaser.jpg" alt="CausalDub teaser: source, same-audio, and cross-audio results across seven cases" width="2200" height="1016">
+    <img src="media/teaser.jpg" alt="Replacement-speech editing comparison under matched source video and driving audio" width="1225" height="536">
   </div>
-  <p class="caption">Seven frozen cases (English A–D, Chinese E–G): source articulation, same-audio reconstruction, and replacement-speech edit. Mouth insets highlight lip response.</p>
+  <p class="caption">Replacement-speech editing with two-step causal generation. All methods receive the same source video and driving audio; mouth insets compare articulation under matched conditions.</p>
 
   <div class="stats">
     <div class="stat"><b>2</b><span>NFE per causal block</span></div>
@@ -212,26 +211,26 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   <h3>Abstract</h3>
   <div class="panel">
     <p style="margin:0;color:var(--ink)">
-      Source-video lip editing must follow replacement speech while preserving the source
-      video’s identity, pose, expression, lighting, and non-mouth motion. We compress a strong
-      full-context editor into a block-causal model with two denoising evaluations and one
-      audio branch per block. The construction adapts the editor to causal generation,
-      regresses two-step trajectories from the guided causal parent, and applies guided
-      distribution matching with an appearance-retention anchor. On held-out CausalDub-Bench
-      the student reaches 8.681 cross Sync-C, non-inferior to its 48-step teacher (8.718)
-      and above every external method (best 7.575). SyncNet-independent lip-reading WER and
-      audio-shift calibration support that the gain is not a SyncNet artifact.
+      Source-video dubbing must follow replacement speech while preserving identity, pose,
+      and recorded motion. We introduce a causal editor trained by guided response distillation.
+      Counterfactual causal adaptation learns replacement-speech editing with valid reconstruction
+      targets; matched trajectory regression transfers a guided two-branch parent into a
+      single-branch student; and guided distribution matching with retention recovers visual
+      quality. The resulting editor uses a 1.3B generative backbone, two denoising updates per
+      block, and bounded generated state. Across four benchmarks it outperforms all evaluated
+      external methods in cross-audio Sync-C. On CausalDub-Bench, 8.681 is non-inferior to the
+      48-step parent’s 8.718 under a prespecified 0.10 margin.
     </p>
   </div>
 </div></section>
 
 <section id="method"><div class="wrap">
   <h3>Method</h3>
-  <p class="section-lead">A full-context teacher is adapted to causal generation, used to supervise two-step trajectories, then refined with guided distribution matching and retention.</p>
+  <p class="section-lead">The method separates source preservation from replacement-speech control, then transfers a guided parent response into a two-step causal student.</p>
   <div class="two">
     <div class="panel">
-      <img src="media/framework.jpg" alt="CausalDub framework overview">
-      <p class="caption">Block-causal student: two denoising evaluations, one audio branch, bounded history.</p>
+      <img src="media/architecture.jpg" alt="CausalDub causal editing architecture">
+      <p class="caption">Masked source and reference preserve appearance; frame-local audio controls articulation; block-causal attention reads only committed generated history.</p>
     </div>
     <div class="panel">
       <ul class="bullets">
@@ -241,6 +240,10 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
         <li><b>One-branch inference</b> — replacement speech at 2 NFE without a second classifier-free branch at test time.</li>
       </ul>
     </div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <img src="media/training.jpg" alt="CausalDub guided response distillation training procedure">
+    <p class="caption">Counterfactual adaptation, matched trajectory regression, and guided distribution matching with retention. Auxiliary networks are removed at inference.</p>
   </div>
 </div></section>
 
@@ -267,12 +270,8 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   </div>
   <p class="note">CDB = CausalDub-Bench-256 (held-out identities, English + Chinese). Full tables, VoxCeleb2 / TalkVid, WER, and ablations are in the paper and supplementary.</p>
   <div class="panel" style="margin-top:18px">
-    <img src="media/pareto.jpg" alt="Sync vs efficiency Pareto plot">
-    <p class="caption">Synchronization–efficiency trade-off. CausalDub sits at high Sync-C with 2 NFE.</p>
-  </div>
-  <div class="panel" style="margin-top:18px">
-    <img src="media/comparison.jpg" alt="Qualitative cross-audio comparison against baselines">
-    <p class="caption">Cross-audio comparison on the first HDTF item. All methods receive the same source and replacement waveform.</p>
+    <img src="media/results.jpg" alt="Cross-audio synchronization versus distribution quality on four benchmarks">
+    <p class="caption">Cross-audio synchronization versus distribution quality. CausalDub has the highest Sync-C on all four benchmarks; FVD shows the remaining visual-quality gap.</p>
   </div>
 </div></section>
 
@@ -298,7 +297,7 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   <h3>Cite</h3>
   <p class="section-lead">Please cite CausalDub as follows (update authors / venue when available):</p>
   <div class="bib" id="bib">@misc{causaldub,
-  title        = {CausalDub: Distilling Full-Context Lip Editing into a Two-Step Causal Model},
+  title        = {CausalDub: Guided Response Distillation for Causal Video Dubbing},
   howpublished = {Project page},
   note         = {https://law1223.github.io/casualdub-project-page/}
 }</div>

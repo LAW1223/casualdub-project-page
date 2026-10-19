@@ -1,6 +1,6 @@
 # CausalDub Project Page
 
-Static results page for **CausalDub: Distilling Full-Context Lip Editing into a Two-Step Causal Model**.
+Static results page for **CausalDub: Guided Response Distillation for Causal Video Dubbing**.
 
 ## View locally
 
