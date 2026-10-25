@@ -43,9 +43,12 @@
     {
       "eyebrow": "Generated source",
       "title": "CausalDub-Bench",
-      "description": "The three methods receive the same source clip and replacement speech. The source is included only as a visual reference.",
+      "aspect": "square",
+      "audio": "assets/paper/comparisons/cdb_causaldub.mp4",
+      "description": "The four methods receive the same source clip and replacement speech. The source is included only as a visual reference.",
       "items": [
         {"label": "Source", "video": "assets/paper/comparisons/cdb_source.mp4"},
+        {"label": "Wav2Lip", "video": "assets/paper/comparisons/cdb_wav2lip.mp4"},
         {"label": "LatentSync", "video": "assets/paper/comparisons/cdb_latentsync.mp4"},
         {"label": "LipForcing-14B", "video": "assets/paper/comparisons/cdb_lipforcing.mp4"},
         {"label": "CausalDub", "video": "assets/paper/comparisons/cdb_causaldub.mp4"}
@@ -54,11 +57,14 @@
     {
       "eyebrow": "Captured source",
       "title": "HDTF",
-      "description": "The three methods receive the same captured source and replacement speech, exposing synchronization and source-preservation differences.",
+      "aspect": "wide",
+      "audio": "assets/paper/comparisons/hdtf_causaldub.mp4",
+      "description": "The four methods receive the same captured source and replacement speech, exposing synchronization and source-preservation differences.",
       "items": [
         {"label": "Source", "video": "assets/paper/comparisons/hdtf_source.mp4"},
         {"label": "Wav2Lip", "video": "assets/paper/comparisons/hdtf_wav2lip.mp4"},
         {"label": "LatentSync", "video": "assets/paper/comparisons/hdtf_latentsync.mp4"},
+        {"label": "LipForcing-14B", "video": "assets/paper/comparisons/hdtf_lipforcing.mp4"},
         {"label": "CausalDub", "video": "assets/paper/comparisons/hdtf_causaldub.mp4"}
       ]
     }
@@ -67,7 +73,7 @@
     {
       "eyebrow": "Replacement-aware SFT",
       "title": "Reconstruction alone is not replacement control",
-      "description": "A matched teacher intervention compares the same-audio-only control with replacement-aware refinement. Aggregate cross-audio Sync-C improves by 0.954–1.653 across the four frozen benchmarks; fidelity changes are reported separately.",
+      "description": "Matched teacher checkpoints on HDTF-30, TalkVid-50, CausalDub-50, and VoxCeleb2-30. Replacement-aware refinement raises cross-audio Sync-C by 0.954–1.653; mixed FVD changes do not support a universal fidelity claim.",
       "items": [
         {"label": "Same-audio-only control", "video": "assets/paper/ablations/sft_same_only.mp4"},
         {"label": "Replacement-aware refinement", "video": "assets/paper/ablations/sft_replacement_aware.mp4"}
@@ -76,7 +82,7 @@
     {
       "eyebrow": "Two-step compression",
       "title": "DMD recovers compression-induced quality loss",
-      "description": "Matched two-step trajectory regression raises FVD from 8.91 to 10.84; distribution matching lowers it to 7.76. DMD is used for quality recovery, not claimed as the source of replacement control.",
+      "description": "On the frozen 256-source development split, two-step trajectory regression raises FVD from 8.91 to 10.84; distribution matching lowers it to 7.76. These are single-seed stage diagnostics, so DMD is claimed only as quality recovery.",
       "items": [
         {"label": "Two-step trajectory regression", "video": "assets/paper/ablations/two_step_ode.mp4"},
         {"label": "After distribution matching", "video": "assets/paper/ablations/two_step_dmd.mp4"}
@@ -86,6 +92,7 @@
   "long_form": {
     "title": "Long execution exposes what short clips hide",
     "description": "All methods receive the same 60-second source and replacement audio. The continuous-cache control is shown as a limitation; source-reanchored CausalDub is the deployed protocol.",
+    "audio": "assets/paper/long/source_reanchored_pair14.mp4",
     "items": [
       {"label": "Wav2Lip", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/wav2lip_pair14.mp4"},
       {"label": "LatentSync", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/latentsync_pair14.mp4"},

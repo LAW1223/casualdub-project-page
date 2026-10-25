@@ -52,6 +52,7 @@ nav{
 .nav-links{display:flex;gap:16px;margin-left:auto;flex-wrap:wrap;font-size:14px;font-weight:600}
 .nav-links a{color:var(--muted);text-decoration:none}
 .nav-links a:hover{color:var(--ink)}
+.menu-button{display:none;margin-left:auto;border-color:var(--line);background:#fff}
 
 .hero{padding:56px 0 18px}
 .eyebrow{
@@ -114,8 +115,8 @@ section h3{
 .bullets li{margin:0 0 10px;color:var(--ink)}
 .bullets li::marker{color:var(--accent)}
 
-.table-wrap{overflow:auto;border-radius:14px;border:1px solid var(--line)}
-table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;min-width:720px}
+.table-wrap{overflow:auto;border-radius:14px;border:1px solid var(--line);box-shadow:inset -18px 0 18px -24px rgba(19,32,40,.65)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;min-width:980px}
 th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
 th:first-child,td:first-child{text-align:left}
 th{background:var(--soft);font-size:12px;letter-spacing:.02em}
@@ -167,6 +168,17 @@ video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:conta
 .media-grid figcaption{padding:8px 11px 10px;color:var(--muted);font-size:11.5px;font-weight:700}
 .media-grid.wide video{aspect-ratio:16/9}
 .comparison-list{display:grid;gap:18px}
+.comparison-card{overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(19,32,40,.04)}
+.compare-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0 22px 18px}
+.compare-controls audio{height:34px;max-width:280px}
+.compare-body{display:grid;grid-template-columns:minmax(160px,.55fr) minmax(0,2fr);gap:2px;background:var(--line)}
+.compare-source,.compare-methods figure{margin:0;background:#fff;min-width:0}
+.compare-methods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;background:var(--line)}
+.compare-body video{border-radius:0}
+.compare-body.square video{aspect-ratio:1/1}
+.compare-body.wide video{aspect-ratio:16/9}
+.compare-body figcaption{padding:9px 11px 11px;color:var(--muted);font-size:11.5px;font-weight:800}
+.group-play{background:var(--ink);color:#fff}
 .evidence-list{display:grid;gap:18px}
 .evidence-card{display:grid;grid-template-columns:.75fr 1.25fr}
 .evidence-copy{padding:28px;display:flex;flex-direction:column;justify-content:center}
@@ -177,6 +189,10 @@ video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:conta
 .long-card figcaption{padding:8px 12px 12px;color:var(--muted);font-size:11.5px;font-weight:700}
 .long-card.failure{border-color:#e5c1a6}
 .long-card.success{border-color:#9dccbd}
+.long-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 16px}
+.long-controls audio{height:34px;max-width:320px}
+.load-row{display:flex;justify-content:center;padding:18px 0 0}
+.load-more{background:var(--ink);color:#fff;padding:11px 20px}
 .limits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0}
 .limits li{padding:18px;border-radius:12px;background:var(--soft);color:var(--muted);font-size:13px}
 
@@ -191,42 +207,54 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .two{grid-template-columns:1fr}
   .domain-grid,.long-grid,.evidence-card{grid-template-columns:1fr}
-  .media-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .media-grid.four,.compare-methods{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .compare-body{grid-template-columns:1fr}
   .limits{grid-template-columns:1fr}
   .case-head{grid-template-columns:auto 1fr}
   .metrics{grid-column:1/-1;justify-content:flex-start}
   .grid{grid-template-columns:1fr}
   button.sync{margin-left:0}
-  .nav-links{display:none}
+  .menu-button{display:inline-flex}
+  .nav-links{display:none;position:absolute;top:58px;left:16px;right:16px;padding:14px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .nav-links.open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  .hero{padding-top:38px}
+  .stats{grid-template-columns:1fr 1fr}
+  .compare-methods{grid-template-columns:1fr}
+  .toolbar{position:static;border-radius:16px}
+  table{font-size:12px}
 }
 </style>
 </head>
 <body>
 <nav><div class="wrap nav-inner">
   <a class="brand" href="#">CausalDub</a>
-  <div class="nav-links">
+  <button class="menu-button" id="menu" aria-expanded="false" aria-controls="nav-links">Sections</button>
+  <div class="nav-links" id="nav-links">
     <a href="#abstract">Abstract</a>
     <a href="#method">Method</a>
     <a href="#results">Results</a>
-    <a href="#domains">Sources</a>
     <a href="#comparisons">Baselines</a>
     <a href="#evidence">Ablations</a>
     <a href="#long">Long-20</a>
-    <a href="#videos">Videos</a>
+    <a href="#domains">Sources</a>
+    <a href="#videos">Gallery</a>
     <a href="#cite">Cite</a>
   </div>
 </div></nav>
 
 <header class="hero"><div class="wrap">
   <div class="eyebrow">Source-video lip editing</div>
-  <p class="hero-brand">CausalDub</p>
+  <h1 class="hero-brand">CausalDub</h1>
   <h2>Guided response distillation for causal video dubbing.</h2>
   <p class="lead">
     Follow replacement speech while preserving identity, pose, and recorded motion
     with two denoising updates, one audio branch, and bounded generated state.
   </p>
   <div class="cta">
-    <a class="btn btn-primary" href="#videos">Watch results</a>
+    <a class="btn btn-primary" href="#comparisons">Compare methods</a>
     <a class="btn btn-ghost" href="#results">See numbers</a>
     <a class="btn btn-ghost" href="#cite">BibTeX</a>
   </div>
@@ -285,36 +313,30 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 
 <section id="results"><div class="wrap">
   <h3>Results</h3>
-  <p class="section-lead">Cross-audio lip sync and visual quality on public benchmarks. FPS is single-H20 marginal throughput of the full public pipeline.</p>
+  <p class="section-lead">Complete cross-audio summary across captured, web, and generated sources. Each cell is Sync-C↑ / FVD↓; results use each method’s scoreable subset, with coverage audited separately.</p>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th>Method</th><th>NFE</th><th>FPS↑</th>
-          <th>HDTF Sync-C↑</th><th>HDTF Sync-D↓</th><th>HDTF FVD↓</th>
-          <th>CDB Sync-C↑</th><th>CDB FVD↓</th>
+          <th>Method</th><th>NFE</th>
+          <th>HDTF-30</th><th>VoxCeleb2-30</th><th>TalkVid-500</th><th>CDB-256</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>Wav2Lip</td><td>1</td><td>5.2</td><td>8.782</td><td>6.972</td><td>129.51</td><td>—</td><td>—</td></tr>
-        <tr><td>LatentSync 1.6</td><td>20</td><td>2.2</td><td>8.160</td><td>7.035</td><td>28.05</td><td>—</td><td>—</td></tr>
-        <tr><td>Lip Forcing</td><td>—</td><td>2.4</td><td>—</td><td>—</td><td>—</td><td>5.192</td><td>15.78</td></tr>
-        <tr><td>Teacher (ours, 48-NFE)</td><td>48</td><td>—</td><td>9.422</td><td>6.127</td><td>27.49</td><td>8.718</td><td>15.23</td></tr>
-        <tr class="ours"><td>CausalDub</td><td>2</td><td>6.3</td><td>10.001</td><td>6.062</td><td>30.89</td><td>8.681</td><td>17.35</td></tr>
+        <tr><td>Wav2Lip</td><td>1</td><td>8.782 / 129.51</td><td>7.800 / 71.73</td><td>6.750 / 111.19</td><td>6.922 / 98.62</td></tr>
+        <tr><td>Diff2Lip</td><td>25</td><td>8.680 / 99.70</td><td>7.533 / 67.15</td><td>6.944 / 73.37</td><td>7.575 / 58.87</td></tr>
+        <tr><td>LatentSync 1.6</td><td>20</td><td>8.160 / 28.05</td><td>6.239 / 28.89</td><td>6.860 / 59.27</td><td>7.544 / 46.77</td></tr>
+        <tr><td>Lip Forcing</td><td>2</td><td>6.884 / 33.80</td><td>4.871 / 41.03</td><td>5.610 / 12.68</td><td>5.192 / 15.78</td></tr>
+        <tr><td>Full-context teacher</td><td>30/30/48</td><td>9.422 / 27.49</td><td>7.382 / 39.11</td><td>7.663 / 8.51</td><td>8.718 / 15.23</td></tr>
+        <tr class="ours"><td>CausalDub</td><td>2</td><td>10.001 / 30.89</td><td>8.549 / 53.25</td><td>7.713 / 13.37</td><td>8.681 / 17.35</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="note">CDB = CausalDub-Bench-256 (held-out identities, English + Chinese). Full tables, VoxCeleb2 / TalkVid, WER, and ablations are in the paper and supplementary.</p>
+  <p class="note">Swipe horizontally on small screens. CDB is source-disjoint CausalDub-Bench. TalkVid success ranges from 402/500 to 500/500; its all-method common intersection has 308 items. CDB’s common intersection has 245 items. Full success counts, Sync-D, confidence intervals, WER/CER, and preservation metrics are reported in the paper.</p>
   <div class="panel" style="margin-top:18px">
     <img src="media/results.jpg" alt="Cross-audio synchronization versus distribution quality on four benchmarks">
     <p class="caption">Cross-audio synchronization versus distribution quality. CausalDub has the highest Sync-C on all four benchmarks; FVD shows the remaining visual-quality gap.</p>
   </div>
-</div></section>
-
-<section id="domains"><div class="wrap">
-  <h3>Across source regimes</h3>
-  <p class="section-lead">The final two-evaluation editor is shown on captured interviews, in-the-wild identities, web video, and source-disjoint generated speakers—not only CausalDub-Bench.</p>
-  <div class="domain-grid" id="domain-grid"></div>
 </div></section>
 
 <section id="comparisons"><div class="wrap">
@@ -332,7 +354,19 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 <section id="long"><div class="wrap">
   <h3 id="long-title">Long-20</h3>
   <p class="section-lead" id="long-description"></p>
+  <div class="long-controls">
+    <button class="group-play" data-group="long-grid">Play all from start</button>
+    <button class="ghost group-pause" data-group="long-grid">Pause all</button>
+    <span class="hint" style="margin:0">Shared target speech:</span>
+    <audio id="long-audio" controls preload="metadata"></audio>
+  </div>
   <div class="long-grid" id="long-grid"></div>
+</div></section>
+
+<section id="domains"><div class="wrap">
+  <h3>Across source regimes</h3>
+  <p class="section-lead">After the matched comparisons and mechanism tests, these examples check the final two-evaluation editor across captured interviews, in-the-wild identities, web video, and source-disjoint generated speakers.</p>
+  <div class="domain-grid" id="domain-grid"></div>
 </div></section>
 
 <section id="videos"><div class="wrap">
@@ -342,15 +376,16 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     selected by a reproducible sync + reconstruction gate and visual farthest-point sampling—not a hand-picked top-20.
     Each case shows source, same-audio reconstruction, and replacement-speech edit.
   </p>
-  <p class="hint">Clips autoplay muted when scrolled into view (~3.4&nbsp;s, looped). Use the controls or “Unmute” for replacement speech audio.</p>
+  <p class="hint">Six cases load initially. Clips autoplay muted when visible; unmuting one clip automatically mutes the others.</p>
   <div class="toolbar">
-    <button class="filter active" data-lang="all">All 20</button>
+    <button class="filter active" data-lang="all">All</button>
     <button class="filter" data-lang="en">English</button>
     <button class="filter" data-lang="zh">Chinese</button>
-    <button class="ghost" id="mute">Unmute videos</button>
+    <button class="ghost" id="mute">Mute all</button>
     <button class="sync" id="play">Replay visible</button>
   </div>
   <main id="cases"></main>
+  <div class="load-row"><button class="load-more" id="load-more">Load 6 more cases</button></div>
 </div></section>
 
 <section id="limits"><div class="wrap">
@@ -377,39 +412,67 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 const DATA = __DATA__;
 const EXTRA = __EXTRA__;
 const root = document.getElementById('cases');
-let muted = true;
 let io = null;
+let activeLang = 'all';
+let visibleCount = 6;
 function esc(x){
   return String(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function media(src,label){
   if(!src) return '';
-  return `<figure><video controls muted loop playsinline preload="metadata" src="${esc(src)}"></video><figcaption>${esc(label)}</figcaption></figure>`;
+  return `<figure><video controls muted loop playsinline preload="metadata" aria-label="${esc(label)}" title="${esc(label)}" src="${esc(src)}"></video><figcaption>${esc(label)}</figcaption></figure>`;
 }
 document.getElementById('domain-grid').innerHTML=EXTRA.domains.map(x=>{
   const items=[media(x.source,'Source'),media(x.same,'Same-audio reconstruction'),media(x.cross,'Replacement speech')].filter(Boolean).join('');
   const cls=x.source?'media-grid three':'media-grid';
   return `<article class="domain-card"><div class="card-copy"><span class="tag">${esc(x.regime)}</span><h4>${esc(x.name)}</h4><p>${esc(x.description)}</p></div><div class="${cls}">${items}</div></article>`;
 }).join('');
-document.getElementById('comparison-list').innerHTML=EXTRA.comparisons.map(x=>
-  `<article class="domain-card"><div class="card-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="media-grid four">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
-).join('');
+document.getElementById('comparison-list').innerHTML=EXTRA.comparisons.map((x,i)=>{
+  const [source,...methods]=x.items;
+  return `<article class="comparison-card" data-sync-card><div class="card-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="compare-controls"><button class="group-play">Play synchronized</button><button class="ghost group-pause">Pause</button><span class="hint" style="margin:0">Shared replacement speech:</span><audio controls preload="metadata" src="${esc(x.audio)}"></audio></div><div class="compare-body ${esc(x.aspect)}"><div class="compare-source">${media(source.video,source.label)}</div><div class="compare-methods">${methods.map(v=>media(v.video,v.label)).join('')}</div></div></article>`;
+}).join('');
 document.getElementById('evidence-list').innerHTML=EXTRA.ablations.map(x=>
   `<article class="evidence-card"><div class="evidence-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="media-grid wide">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
 ).join('');
 document.getElementById('long-title').textContent=EXTRA.long_form.title;
 document.getElementById('long-description').textContent=EXTRA.long_form.description;
+document.getElementById('long-audio').src=EXTRA.long_form.audio;
 document.getElementById('long-grid').innerHTML=EXTRA.long_form.items.map(x=>
   `<article class="long-card ${esc(x.kind)}"><div class="card-copy"><span class="tag">${esc(x.note)}</span><h4>${esc(x.label)}</h4></div>${media(x.video,x.label)}</article>`
 ).join('');
 document.getElementById('limitations').innerHTML=EXTRA.limitations.map(x=>`<li>${esc(x)}</li>`).join('');
+function wireExclusiveAudio(scope=document){
+  scope.querySelectorAll('video').forEach(v=>{
+    if(v.dataset.audioWired) return;
+    v.dataset.audioWired='1';
+    v.addEventListener('volumechange',()=>{
+      if(v.muted) return;
+      document.querySelectorAll('video').forEach(other=>{if(other!==v) other.muted=true;});
+      document.querySelectorAll('audio').forEach(a=>a.pause());
+    });
+  });
+}
+function playTogether(container,audio){
+  container.querySelectorAll('video').forEach(v=>{v.currentTime=0;v.muted=true;v.play().catch(()=>{});});
+  if(audio){audio.currentTime=0;audio.play().catch(()=>{});}
+}
+function pauseTogether(container,audio){
+  container.querySelectorAll('video').forEach(v=>v.pause());
+  if(audio) audio.pause();
+}
+document.querySelectorAll('[data-sync-card]').forEach(card=>{
+  const audio=card.querySelector('audio');
+  card.querySelector('.group-play').onclick=()=>playTogether(card,audio);
+  card.querySelector('.group-pause').onclick=()=>pauseTogether(card,audio);
+});
+document.querySelector('#long .group-play').onclick=()=>playTogether(document.getElementById('long-grid'),document.getElementById('long-audio'));
+document.querySelector('#long .group-pause').onclick=()=>pauseTogether(document.getElementById('long-grid'),document.getElementById('long-audio'));
 function wireAutoplay(){
   if(io) io.disconnect();
   io = new IntersectionObserver((entries)=>{
     entries.forEach(en=>{
       const v = en.target;
       if(en.isIntersecting && en.intersectionRatio >= 0.35){
-        v.muted = muted;
         v.play().catch(()=>{});
       }else{
         v.pause();
@@ -418,35 +481,51 @@ function wireAutoplay(){
   }, {threshold:[0,0.35,0.7]});
   document.querySelectorAll('#cases video').forEach(v=>io.observe(v));
 }
-function render(lang='all'){
-  root.innerHTML='';
-  DATA.cases.filter(x=>lang==='all'||x.lang===lang).forEach(x=>{
+function render(reset=true){
+  const filtered=DATA.cases.filter(x=>activeLang==='all'||x.lang===activeLang);
+  const start=reset?0:root.children.length;
+  if(reset) root.innerHTML='';
+  filtered.slice(start,visibleCount).forEach(x=>{
     const m=x.metrics;
     const el=document.createElement('section');
     el.className='case';
-    const vattrs=`controls muted autoplay loop playsinline preload="auto"`;
+    const vattrs=`controls muted autoplay loop playsinline preload="metadata"`;
     el.innerHTML=`<div class="case-head"><div class="number">${String(x.rank).padStart(2,'0')}</div><div><div class="title">${esc(x.lang.toUpperCase())} · ${esc(x.age_group)} · ${esc(x.gender_group)}</div><div class="prompt" title="${esc(x.prompt)}">${esc(x.prompt)}</div></div><div class="metrics"><div class="metric"><b>${m.cross_sync_c.toFixed(2)}</b>Cross Sync-C</div><div class="metric"><b>${m.same_ssim.toFixed(3)}</b>Same SSIM</div><div class="metric"><b>${m.cross_sync_d.toFixed(2)}</b>Cross Sync-D</div></div></div><div class="grid"><div class="cell"><div class="label">Source <small>original</small></div><video ${vattrs} src="${x.files.source}"></video></div><div class="cell"><div class="label">Same audio <small>reconstruction</small></div><video ${vattrs} src="${x.files.same}"></video></div><div class="cell cross"><div class="label">Replacement <small>CausalDub</small></div><video ${vattrs} src="${x.files.cross}"></video></div></div>`;
     root.appendChild(el);
   });
-  document.querySelectorAll('#cases video').forEach(v=>{v.muted=muted;});
+  wireExclusiveAudio(root);
   wireAutoplay();
+  const more=document.getElementById('load-more');
+  const remaining=filtered.length-visibleCount;
+  more.hidden=remaining<=0;
+  more.textContent=remaining>0?`Load ${Math.min(6,remaining)} more cases`:'All cases loaded';
 }
 document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');
-  render(b.dataset.lang);
+  activeLang=b.dataset.lang;
+  visibleCount=6;
+  render(true);
 });
 document.getElementById('mute').onclick=()=>{
-  muted=!muted;
-  document.querySelectorAll('#cases video').forEach(v=>{v.muted=muted; if(!muted) v.play().catch(()=>{});});
-  document.getElementById('mute').textContent=muted?'Unmute videos':'Mute videos';
+  document.querySelectorAll('video').forEach(v=>v.muted=true);
+  document.querySelectorAll('audio').forEach(a=>a.pause());
 };
 document.getElementById('play').onclick=()=>document.querySelectorAll('#cases video').forEach(v=>{
   const r=v.getBoundingClientRect();
   const vis=r.top<window.innerHeight && r.bottom>0;
-  if(vis){ v.currentTime=0; v.muted=muted; v.play().catch(()=>{}); }
+  if(vis){v.currentTime=0;v.play().catch(()=>{});}
 });
-render();
+document.getElementById('load-more').onclick=()=>{visibleCount+=6;render(false);};
+const menu=document.getElementById('menu');
+const navLinks=document.getElementById('nav-links');
+menu.onclick=()=>{
+  const open=navLinks.classList.toggle('open');
+  menu.setAttribute('aria-expanded',String(open));
+};
+navLinks.querySelectorAll('a').forEach(a=>a.onclick=()=>{navLinks.classList.remove('open');menu.setAttribute('aria-expanded','false');});
+wireExclusiveAudio();
+render(true);
 </script>
 </body>
 </html>

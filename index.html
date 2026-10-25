@@ -41,6 +41,7 @@ nav{
 .nav-links{display:flex;gap:16px;margin-left:auto;flex-wrap:wrap;font-size:14px;font-weight:600}
 .nav-links a{color:var(--muted);text-decoration:none}
 .nav-links a:hover{color:var(--ink)}
+.menu-button{display:none;margin-left:auto;border-color:var(--line);background:#fff}
 
 .hero{padding:56px 0 18px}
 .eyebrow{
@@ -103,8 +104,8 @@ section h3{
 .bullets li{margin:0 0 10px;color:var(--ink)}
 .bullets li::marker{color:var(--accent)}
 
-.table-wrap{overflow:auto;border-radius:14px;border:1px solid var(--line)}
-table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;min-width:720px}
+.table-wrap{overflow:auto;border-radius:14px;border:1px solid var(--line);box-shadow:inset -18px 0 18px -24px rgba(19,32,40,.65)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;min-width:980px}
 th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
 th:first-child,td:first-child{text-align:left}
 th{background:var(--soft);font-size:12px;letter-spacing:.02em}
@@ -156,6 +157,17 @@ video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:conta
 .media-grid figcaption{padding:8px 11px 10px;color:var(--muted);font-size:11.5px;font-weight:700}
 .media-grid.wide video{aspect-ratio:16/9}
 .comparison-list{display:grid;gap:18px}
+.comparison-card{overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(19,32,40,.04)}
+.compare-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0 22px 18px}
+.compare-controls audio{height:34px;max-width:280px}
+.compare-body{display:grid;grid-template-columns:minmax(160px,.55fr) minmax(0,2fr);gap:2px;background:var(--line)}
+.compare-source,.compare-methods figure{margin:0;background:#fff;min-width:0}
+.compare-methods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;background:var(--line)}
+.compare-body video{border-radius:0}
+.compare-body.square video{aspect-ratio:1/1}
+.compare-body.wide video{aspect-ratio:16/9}
+.compare-body figcaption{padding:9px 11px 11px;color:var(--muted);font-size:11.5px;font-weight:800}
+.group-play{background:var(--ink);color:#fff}
 .evidence-list{display:grid;gap:18px}
 .evidence-card{display:grid;grid-template-columns:.75fr 1.25fr}
 .evidence-copy{padding:28px;display:flex;flex-direction:column;justify-content:center}
@@ -166,6 +178,10 @@ video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:conta
 .long-card figcaption{padding:8px 12px 12px;color:var(--muted);font-size:11.5px;font-weight:700}
 .long-card.failure{border-color:#e5c1a6}
 .long-card.success{border-color:#9dccbd}
+.long-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 16px}
+.long-controls audio{height:34px;max-width:320px}
+.load-row{display:flex;justify-content:center;padding:18px 0 0}
+.load-more{background:var(--ink);color:#fff;padding:11px 20px}
 .limits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0}
 .limits li{padding:18px;border-radius:12px;background:var(--soft);color:var(--muted);font-size:13px}
 
@@ -180,42 +196,54 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .two{grid-template-columns:1fr}
   .domain-grid,.long-grid,.evidence-card{grid-template-columns:1fr}
-  .media-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .media-grid.four,.compare-methods{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .compare-body{grid-template-columns:1fr}
   .limits{grid-template-columns:1fr}
   .case-head{grid-template-columns:auto 1fr}
   .metrics{grid-column:1/-1;justify-content:flex-start}
   .grid{grid-template-columns:1fr}
   button.sync{margin-left:0}
-  .nav-links{display:none}
+  .menu-button{display:inline-flex}
+  .nav-links{display:none;position:absolute;top:58px;left:16px;right:16px;padding:14px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .nav-links.open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  .hero{padding-top:38px}
+  .stats{grid-template-columns:1fr 1fr}
+  .compare-methods{grid-template-columns:1fr}
+  .toolbar{position:static;border-radius:16px}
+  table{font-size:12px}
 }
 </style>
 </head>
 <body>
 <nav><div class="wrap nav-inner">
   <a class="brand" href="#">CausalDub</a>
-  <div class="nav-links">
+  <button class="menu-button" id="menu" aria-expanded="false" aria-controls="nav-links">Sections</button>
+  <div class="nav-links" id="nav-links">
     <a href="#abstract">Abstract</a>
     <a href="#method">Method</a>
     <a href="#results">Results</a>
-    <a href="#domains">Sources</a>
     <a href="#comparisons">Baselines</a>
     <a href="#evidence">Ablations</a>
     <a href="#long">Long-20</a>
-    <a href="#videos">Videos</a>
+    <a href="#domains">Sources</a>
+    <a href="#videos">Gallery</a>
     <a href="#cite">Cite</a>
   </div>
 </div></nav>
 
 <header class="hero"><div class="wrap">
   <div class="eyebrow">Source-video lip editing</div>
-  <p class="hero-brand">CausalDub</p>
+  <h1 class="hero-brand">CausalDub</h1>
   <h2>Guided response distillation for causal video dubbing.</h2>
   <p class="lead">
     Follow replacement speech while preserving identity, pose, and recorded motion
     with two denoising updates, one audio branch, and bounded generated state.
   </p>
   <div class="cta">
-    <a class="btn btn-primary" href="#videos">Watch results</a>
+    <a class="btn btn-primary" href="#comparisons">Compare methods</a>
     <a class="btn btn-ghost" href="#results">See numbers</a>
     <a class="btn btn-ghost" href="#cite">BibTeX</a>
   </div>
@@ -274,36 +302,30 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 
 <section id="results"><div class="wrap">
   <h3>Results</h3>
-  <p class="section-lead">Cross-audio lip sync and visual quality on public benchmarks. FPS is single-H20 marginal throughput of the full public pipeline.</p>
+  <p class="section-lead">Complete cross-audio summary across captured, web, and generated sources. Each cell is Sync-C↑ / FVD↓; results use each method’s scoreable subset, with coverage audited separately.</p>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th>Method</th><th>NFE</th><th>FPS↑</th>
-          <th>HDTF Sync-C↑</th><th>HDTF Sync-D↓</th><th>HDTF FVD↓</th>
-          <th>CDB Sync-C↑</th><th>CDB FVD↓</th>
+          <th>Method</th><th>NFE</th>
+          <th>HDTF-30</th><th>VoxCeleb2-30</th><th>TalkVid-500</th><th>CDB-256</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>Wav2Lip</td><td>1</td><td>5.2</td><td>8.782</td><td>6.972</td><td>129.51</td><td>—</td><td>—</td></tr>
-        <tr><td>LatentSync 1.6</td><td>20</td><td>2.2</td><td>8.160</td><td>7.035</td><td>28.05</td><td>—</td><td>—</td></tr>
-        <tr><td>Lip Forcing</td><td>—</td><td>2.4</td><td>—</td><td>—</td><td>—</td><td>5.192</td><td>15.78</td></tr>
-        <tr><td>Teacher (ours, 48-NFE)</td><td>48</td><td>—</td><td>9.422</td><td>6.127</td><td>27.49</td><td>8.718</td><td>15.23</td></tr>
-        <tr class="ours"><td>CausalDub</td><td>2</td><td>6.3</td><td>10.001</td><td>6.062</td><td>30.89</td><td>8.681</td><td>17.35</td></tr>
+        <tr><td>Wav2Lip</td><td>1</td><td>8.782 / 129.51</td><td>7.800 / 71.73</td><td>6.750 / 111.19</td><td>6.922 / 98.62</td></tr>
+        <tr><td>Diff2Lip</td><td>25</td><td>8.680 / 99.70</td><td>7.533 / 67.15</td><td>6.944 / 73.37</td><td>7.575 / 58.87</td></tr>
+        <tr><td>LatentSync 1.6</td><td>20</td><td>8.160 / 28.05</td><td>6.239 / 28.89</td><td>6.860 / 59.27</td><td>7.544 / 46.77</td></tr>
+        <tr><td>Lip Forcing</td><td>2</td><td>6.884 / 33.80</td><td>4.871 / 41.03</td><td>5.610 / 12.68</td><td>5.192 / 15.78</td></tr>
+        <tr><td>Full-context teacher</td><td>30/30/48</td><td>9.422 / 27.49</td><td>7.382 / 39.11</td><td>7.663 / 8.51</td><td>8.718 / 15.23</td></tr>
+        <tr class="ours"><td>CausalDub</td><td>2</td><td>10.001 / 30.89</td><td>8.549 / 53.25</td><td>7.713 / 13.37</td><td>8.681 / 17.35</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="note">CDB = CausalDub-Bench-256 (held-out identities, English + Chinese). Full tables, VoxCeleb2 / TalkVid, WER, and ablations are in the paper and supplementary.</p>
+  <p class="note">Swipe horizontally on small screens. CDB is source-disjoint CausalDub-Bench. TalkVid success ranges from 402/500 to 500/500; its all-method common intersection has 308 items. CDB’s common intersection has 245 items. Full success counts, Sync-D, confidence intervals, WER/CER, and preservation metrics are reported in the paper.</p>
   <div class="panel" style="margin-top:18px">
     <img src="media/results.jpg" alt="Cross-audio synchronization versus distribution quality on four benchmarks">
     <p class="caption">Cross-audio synchronization versus distribution quality. CausalDub has the highest Sync-C on all four benchmarks; FVD shows the remaining visual-quality gap.</p>
   </div>
-</div></section>
-
-<section id="domains"><div class="wrap">
-  <h3>Across source regimes</h3>
-  <p class="section-lead">The final two-evaluation editor is shown on captured interviews, in-the-wild identities, web video, and source-disjoint generated speakers—not only CausalDub-Bench.</p>
-  <div class="domain-grid" id="domain-grid"></div>
 </div></section>
 
 <section id="comparisons"><div class="wrap">
@@ -321,7 +343,19 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 <section id="long"><div class="wrap">
   <h3 id="long-title">Long-20</h3>
   <p class="section-lead" id="long-description"></p>
+  <div class="long-controls">
+    <button class="group-play" data-group="long-grid">Play all from start</button>
+    <button class="ghost group-pause" data-group="long-grid">Pause all</button>
+    <span class="hint" style="margin:0">Shared target speech:</span>
+    <audio id="long-audio" controls preload="metadata"></audio>
+  </div>
   <div class="long-grid" id="long-grid"></div>
+</div></section>
+
+<section id="domains"><div class="wrap">
+  <h3>Across source regimes</h3>
+  <p class="section-lead">After the matched comparisons and mechanism tests, these examples check the final two-evaluation editor across captured interviews, in-the-wild identities, web video, and source-disjoint generated speakers.</p>
+  <div class="domain-grid" id="domain-grid"></div>
 </div></section>
 
 <section id="videos"><div class="wrap">
@@ -331,15 +365,16 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     selected by a reproducible sync + reconstruction gate and visual farthest-point sampling—not a hand-picked top-20.
     Each case shows source, same-audio reconstruction, and replacement-speech edit.
   </p>
-  <p class="hint">Clips autoplay muted when scrolled into view (~3.4&nbsp;s, looped). Use the controls or “Unmute” for replacement speech audio.</p>
+  <p class="hint">Six cases load initially. Clips autoplay muted when visible; unmuting one clip automatically mutes the others.</p>
   <div class="toolbar">
-    <button class="filter active" data-lang="all">All 20</button>
+    <button class="filter active" data-lang="all">All</button>
     <button class="filter" data-lang="en">English</button>
     <button class="filter" data-lang="zh">Chinese</button>
-    <button class="ghost" id="mute">Unmute videos</button>
+    <button class="ghost" id="mute">Mute all</button>
     <button class="sync" id="play">Replay visible</button>
   </div>
   <main id="cases"></main>
+  <div class="load-row"><button class="load-more" id="load-more">Load 6 more cases</button></div>
 </div></section>
 
 <section id="limits"><div class="wrap">
@@ -364,41 +399,69 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 
 <script>
 const DATA = {"schema": 1, "date": "2026-10-10", "seed": 20261010, "method": "r2a_dmd2 / CausalDub-2", "population": 256, "eligible": 253, "selected": 20, "excluded": {"incomplete_metrics": 3, "missing_video": 0, "visual_failure": 0}, "selection": "language-balanced quality gate followed by visual farthest-point sampling", "cases": [{"rank": 1, "case": "case_01", "key": "qwen35_talking_020329_000", "lang": "en", "age_group": "adult", "gender_group": "male", "prompt": "A 50-year-old North American Indigenous man, rugged face, missing left hand (visible stump or prosthetic covered by sleeve), wearing a work apron. Background is a pottery studio with shelves, natural side light, high contrast. Faces camera directly, eyes focused intensely, holding an imaginary ball of clay with both hands (one real, one phantom gesture), hands below mouth. Speech text:", "quality_score": 1.621497, "diversity_gain": 0.0, "metrics": {"same_sync_c": 10.829680442810059, "same_sync_d": 5.7567243576049805, "same_ssim": 0.9268386073839201, "same_psnr": 31.97875256226335, "cross_sync_c": 11.387369155883789, "cross_sync_d": 5.307662487030029, "cross_offset": 0.0}, "files": {"source": "assets/case_01/source.mp4", "same": "assets/case_01/same.mp4", "cross": "assets/case_01/cross.mp4", "audio_same": "assets/case_01/audio_same.wav", "audio_cross": "assets/case_01/audio_cross.wav"}, "thumbnail": "thumbnails/case_01.jpg", "source_sha256": "021709f02ae4cfdc76788a3b241017f22649b1124b620c2fc761004e939c74e5", "same_sha256": "42df0ae064bdd6224dda4a5fe933f6631d602fbf61424a3957b0195f134d78eb", "cross_sha256": "0b6ffff5fd5a4486cca39bbc4bf5ed6212d0f2d7d553ae0cb026bdb7dc7064d1"}, {"rank": 2, "case": "case_02", "key": "qwen35_talking_080085_000", "lang": "en", "age_group": "young", "gender_group": "male", "prompt": "A 16-year-old German boy, chest-up shot, facing the camera directly. He wears a hoodie, hood down. Background is a simple bedroom, dim lighting. His fingers rub together nervously, eyes looking at the lens but slightly watery, expression ashamed and vulnerable.", "quality_score": 1.32037, "diversity_gain": 0.0, "metrics": {"same_sync_c": 10.701383590698242, "same_sync_d": 5.645683765411377, "same_ssim": 0.9410438548280194, "same_psnr": 30.732276657757584, "cross_sync_c": 11.172141075134277, "cross_sync_d": 6.073874473571777, "cross_offset": 0.0}, "files": {"source": "assets/case_02/source.mp4", "same": "assets/case_02/same.mp4", "cross": "assets/case_02/cross.mp4", "audio_same": "assets/case_02/audio_same.wav", "audio_cross": "assets/case_02/audio_cross.wav"}, "thumbnail": "thumbnails/case_02.jpg", "source_sha256": "3edc89cd765a53c512ae2e4a70f826c8b0707170ec48cb242f9bb282037db492", "same_sha256": "0aec889a9536d06afd8424f6194c7c8b10d10f005ef900847d133d7d98e4e540", "cross_sha256": "d52821e338af242d416d59e1a20ac42f18f7c2c0f905675ae0df105c2ee5f490"}, {"rank": 3, "case": "case_03", "key": "qwen35_talking_027616_000", "lang": "en", "age_group": "adult", "gender_group": "male", "prompt": "A 50-year-old Maori man with traditional facial tattoos (Ta moko), wearing a black t-shirt, standing in a green forest clearing. Natural dappled light filters through trees onto his face. He looks directly at the camera with deep respect, hand placed firmly over his heart. His expression is serious and grateful.", "quality_score": 1.197329, "diversity_gain": 2.128023, "metrics": {"same_sync_c": 9.976643562316895, "same_sync_d": 6.787724494934082, "same_ssim": 0.903695069087626, "same_psnr": 29.802645642934824, "cross_sync_c": 11.585724830627441, "cross_sync_d": 6.038836479187012, "cross_offset": 0.0}, "files": {"source": "assets/case_03/source.mp4", "same": "assets/case_03/same.mp4", "cross": "assets/case_03/cross.mp4", "audio_same": "assets/case_03/audio_same.wav", "audio_cross": "assets/case_03/audio_cross.wav"}, "thumbnail": "thumbnails/case_03.jpg", "source_sha256": "bbfaca5e1849147f42af223c922a7c013377a8cd519a31f0938ad22942cbce65", "same_sha256": "ac0bc071cea8fba3d0482a70054987aedee536aafbb364324316bf2616448506", "cross_sha256": "f88851ea4d4f75b7e964ecba8479a14be075d814da991c5a38c5052694b64591"}, {"rank": 4, "case": "case_04", "key": "qwen35_talking_008288_000", "lang": "en", "age_group": "adult", "gender_group": "unspecified", "prompt": "A twenty-year-old Swedish gender-fluid person with short pastel hair, wearing a comfortable grey hoodie. They are sitting on a bed in a minimalist bedroom, natural morning light from a side window. They look directly at the camera with soft, relaxed eyes. One hand gently pats their chest over the heart, rhythmically and slowly. Speech text:  Camera is chest-up, soft focus, face fully visible.", "quality_score": 1.169726, "diversity_gain": 1.841904, "metrics": {"same_sync_c": 7.489972114562988, "same_sync_d": 7.050081253051758, "same_ssim": 0.927739077789045, "same_psnr": 29.07198688999016, "cross_sync_c": 11.156576156616211, "cross_sync_d": 5.523448467254639, "cross_offset": 0.0}, "files": {"source": "assets/case_04/source.mp4", "same": "assets/case_04/same.mp4", "cross": "assets/case_04/cross.mp4", "audio_same": "assets/case_04/audio_same.wav", "audio_cross": "assets/case_04/audio_cross.wav"}, "thumbnail": "thumbnails/case_04.jpg", "source_sha256": "9326cb041e25be5c533f4d82aa819124556f0a55b23223d05436e9f8ac831a3a", "same_sha256": "9d0c85688d9dc7d53298b14f4d9eebe81f735d1c2ad88b2ed65448b2e9f51700", "cross_sha256": "aeb954b0913ac18535536d377bc43c5d89da3f75cf55f5b9f737ada6e7f8cbbf"}, {"rank": 5, "case": "case_05", "key": "qwen35_talking_057575_000", "lang": "en", "age_group": "young", "gender_group": "female", "prompt": "A 16-year-old Scottish girl sits in her bedroom, upper body shot, facing the camera directly with worried eye contact. She wears casual pajamas. Her hand touches her hair nervously. The lighting is soft indoor lamp light. Her expression is embarrassed and anxious.", "quality_score": 1.026246, "diversity_gain": 1.836181, "metrics": {"same_sync_c": 10.746541976928711, "same_sync_d": 6.28698205947876, "same_ssim": 0.8945701887827856, "same_psnr": 27.536806649952887, "cross_sync_c": 11.705852508544922, "cross_sync_d": 6.291978359222412, "cross_offset": 0.0}, "files": {"source": "assets/case_05/source.mp4", "same": "assets/case_05/same.mp4", "cross": "assets/case_05/cross.mp4", "audio_same": "assets/case_05/audio_same.wav", "audio_cross": "assets/case_05/audio_cross.wav"}, "thumbnail": "thumbnails/case_05.jpg", "source_sha256": "d36e74ec54891fc11212a59e6797f61f44f674f722fa4c4bf9f85ba7cbcf6f34", "same_sha256": "77b559c1c080d8c0e1cbd32dfd84477b588c878b1f9d8707ff384317f04ebb13", "cross_sha256": "20cc8d19205272450bfb42641989c99adf9de21daa32b1042e70d41fc6938ae0"}, {"rank": 6, "case": "case_06", "key": "qwen35_talking_028949_000", "lang": "en", "age_group": "adult", "gender_group": "unspecified", "prompt": "A 6-12 year old Chinese American child with non-binary gender presentation, short hair, wearing a colorful striped T-shirt and a visible hearing aid. Standing in a science lab setting. The child looks directly at the camera with wide eyes, high arousal surprise, hands open palms up as if showing something precious. Lighting is bright and cool. Speech:  No subtitles, single shot.", "quality_score": 1.003431, "diversity_gain": 2.090918, "metrics": {"same_sync_c": 9.400642395019531, "same_sync_d": 6.92640495300293, "same_ssim": 0.9345341883385245, "same_psnr": 30.097243532697025, "cross_sync_c": 10.293119430541992, "cross_sync_d": 6.222091197967529, "cross_offset": 0.0}, "files": {"source": "assets/case_06/source.mp4", "same": "assets/case_06/same.mp4", "cross": "assets/case_06/cross.mp4", "audio_same": "assets/case_06/audio_same.wav", "audio_cross": "assets/case_06/audio_cross.wav"}, "thumbnail": "thumbnails/case_06.jpg", "source_sha256": "3da901e7ec3d9d4c5d02ca6a0ac9c0917615f0991c883e6aabddf336c65cfbed", "same_sha256": "33e3ef20774cce10a7e5fdaee835478009c9f78e2b746f67fbfa81d7211f07d2", "cross_sha256": "1576af4c0762901bb15c4b0672657fd66c0290918f57c6ff4d991956905d1ad5"}, {"rank": 7, "case": "case_07", "key": "qwen35_talking_032151_000", "lang": "en", "age_group": "adult", "gender_group": "male", "prompt": "A 26-35 year old Anglo-Saxon American man with a limb difference (left arm amputated below elbow), waist-up shot, face front-facing, eyes looking directly at the camera. He wears a business casual shirt, background is an office, soft box lighting. Lighting is soft box, camera quality is高清数码。", "quality_score": 0.963172, "diversity_gain": 1.885957, "metrics": {"same_sync_c": 10.717877388000488, "same_sync_d": 5.843171119689941, "same_ssim": 0.8997328930986189, "same_psnr": 28.305426479454542, "cross_sync_c": 11.066021919250488, "cross_sync_d": 6.556714057922363, "cross_offset": 0.0}, "files": {"source": "assets/case_07/source.mp4", "same": "assets/case_07/same.mp4", "cross": "assets/case_07/cross.mp4", "audio_same": "assets/case_07/audio_same.wav", "audio_cross": "assets/case_07/audio_cross.wav"}, "thumbnail": "thumbnails/case_07.jpg", "source_sha256": "81d786d79cc17bab9cd7b5a6bfa8059d43eb3399bd8ea131d05a26a736207a24", "same_sha256": "cb9d273b08071b1607fcdbeb33ef3610d14dd6ccb949062cdc7388ea40e33094", "cross_sha256": "cf384cb2e4cb394dd7fd0b99a1b76b858433eb228f930c4ba3b494190965a57e"}, {"rank": 8, "case": "case_08", "key": "qwen35_talking_056713_000", "lang": "en", "age_group": "older", "gender_group": "male", "prompt": "An elderly Pakistani man in his sixties, upper body frame, facing the camera directly. He wears a simple t-shirt. Background is a home garden with roses. Lighting is natural afternoon light. His eyes look at the lens, expression calm and content. His right hand taps his chest gently, emotional gesture, not blocking face. Speech text:  1080p resolution, 30fps, warm digital quality.", "quality_score": 0.868959, "diversity_gain": 0.0, "metrics": {"same_sync_c": 9.815739631652832, "same_sync_d": 6.324769020080566, "same_ssim": 0.8815991269458582, "same_psnr": 27.472727058115034, "cross_sync_c": 9.59088134765625, "cross_sync_d": 6.752326488494873, "cross_offset": 0.0}, "files": {"source": "assets/case_08/source.mp4", "same": "assets/case_08/same.mp4", "cross": "assets/case_08/cross.mp4", "audio_same": "assets/case_08/audio_same.wav", "audio_cross": "assets/case_08/audio_cross.wav"}, "thumbnail": "thumbnails/case_08.jpg", "source_sha256": "ddd40299a49ccfcd20945a272f2c574a97e5e9539a68d68edb1978ae4efcae40", "same_sha256": "4c6f2b718d16fb4ecedb9a08124d6afd087661f1932a34cc4ff0f536be5013a0", "cross_sha256": "ed78ce9cd4f8523881e12f823cb802a28bd9f2dcfda4229769af47d27551bc7c"}, {"rank": 9, "case": "case_09", "key": "qwen35_talking_014870_000", "lang": "en", "age_group": "adult", "gender_group": "unspecified", "prompt": "A waist-up shot of a 40-year-old Indigenous Australian woman outdoors in a cold environment. She wears a heavy winter coat and a beanie. Her face is front-facing, eyes looking at the camera with high-alert fear and urgency. She uses both hands to simulate the shape of ice or horizontal movement. Cold natural light, snowy background.", "quality_score": 0.809618, "diversity_gain": 2.253407, "metrics": {"same_sync_c": 9.11925220489502, "same_sync_d": 7.22397518157959, "same_ssim": 0.9204696848705134, "same_psnr": 33.74986030227567, "cross_sync_c": 9.769546508789062, "cross_sync_d": 6.281017303466797, "cross_offset": 0.0}, "files": {"source": "assets/case_09/source.mp4", "same": "assets/case_09/same.mp4", "cross": "assets/case_09/cross.mp4", "audio_same": "assets/case_09/audio_same.wav", "audio_cross": "assets/case_09/audio_cross.wav"}, "thumbnail": "thumbnails/case_09.jpg", "source_sha256": "333c60b56ca995747eeb806006370580e6686f0a1d4c67f4cd6c412c9d31781f", "same_sha256": "a6bfbf16d935d30a355531306537fdf68844781ed3eae2182d1e1ff201f9d43b", "cross_sha256": "490ebaa3448fdd6ac68a5d06f609a336fd077a7bccd0b411a9faf7ee1bedbe00"}, {"rank": 10, "case": "case_10", "key": "qwen35_talking_004314_000", "lang": "en", "age_group": "adult", "gender_group": "unspecified", "prompt": "A 32-year-old Peruvian woman wearing a traditional shawl over a dark top stands outdoors with mountain background in natural daylight. She faces the camera with focused, contemplative expression. Hands are展开 to the sides.", "quality_score": 0.803683, "diversity_gain": 1.977929, "metrics": {"same_sync_c": 10.584216117858887, "same_sync_d": 7.154084205627441, "same_ssim": 0.8990143013735994, "same_psnr": 26.940847569826254, "cross_sync_c": 10.510723114013672, "cross_sync_d": 6.531525135040283, "cross_offset": 0.0}, "files": {"source": "assets/case_10/source.mp4", "same": "assets/case_10/same.mp4", "cross": "assets/case_10/cross.mp4", "audio_same": "assets/case_10/audio_same.wav", "audio_cross": "assets/case_10/audio_cross.wav"}, "thumbnail": "thumbnails/case_10.jpg", "source_sha256": "f78fdb2e4d20a011889a3155720736d63336bc71725cf83e626c551ae5ee5249", "same_sha256": "549c110b450b64f594f87497f6e22af445f86e6546a0b693559070da542ae381", "cross_sha256": "7221964e0b1bddbd199faa8016ff932698ba9edd66fbf863e88dc05a870b8faa"}, {"rank": 11, "case": "case_11", "key": "qwen35_talking_002401_000", "lang": "zh", "age_group": "young", "gender_group": "female", "prompt": "一位 6-12 岁的东亚汉族岭南粤语区女孩，身穿校服，在教室环境中。 光线为室内暖光，高清数码。 女孩面部正对镜头，眼神直视，表情尴尬羞愧。 双手交叠置于胸前，不遮脸。 她正在自然说话：'' 无字幕。", "quality_score": 0.982234, "diversity_gain": 0.0, "metrics": {"same_sync_c": 9.692802429199219, "same_sync_d": 6.476709842681885, "same_ssim": 0.9186267800625609, "same_psnr": 29.147686631409268, "cross_sync_c": 10.45504379272461, "cross_sync_d": 6.005910873413086, "cross_offset": 0.0}, "files": {"source": "assets/case_11/source.mp4", "same": "assets/case_11/same.mp4", "cross": "assets/case_11/cross.mp4", "audio_same": "assets/case_11/audio_same.wav", "audio_cross": "assets/case_11/audio_cross.wav"}, "thumbnail": "thumbnails/case_11.jpg", "source_sha256": "0c542a4deeb206b1fc17564bb1c63599449d7b00e0e01cc790fec652169501cf", "same_sha256": "325bd4f7b83d4cb1a1d223f1ca6ca997698dd2788b41d65ad57b1145565aa1db", "cross_sha256": "b93ea68e143440a512360d87c5cc8847ec745f57c3bcbb682c27fbff0725597a"}, {"rank": 12, "case": "case_12", "key": "qwen35_talking_044101_000", "lang": "zh", "age_group": "adult", "gender_group": "female", "prompt": "一位 32 岁的印尼爪哇族女性，站在夜市的街道旁。 她穿着简单的 T 恤，背景有模糊的摊位灯光。 夜间人造光照亮她的脸。 她正对镜头，眼神直视镜头，半身构图。 说话时表情略带嫌弃，单手食指指向镜头前方表示强调，手部位置较低，不遮脸。 背景是热闹的夜市虚化。 视频清晰，1080p，30fps。", "quality_score": 0.976335, "diversity_gain": 0.0, "metrics": {"same_sync_c": 9.949883460998535, "same_sync_d": 6.897599220275879, "same_ssim": 0.9136576374869995, "same_psnr": 28.83596997649593, "cross_sync_c": 11.003629684448242, "cross_sync_d": 6.110429286956787, "cross_offset": 0.0}, "files": {"source": "assets/case_12/source.mp4", "same": "assets/case_12/same.mp4", "cross": "assets/case_12/cross.mp4", "audio_same": "assets/case_12/audio_same.wav", "audio_cross": "assets/case_12/audio_cross.wav"}, "thumbnail": "thumbnails/case_12.jpg", "source_sha256": "d532f6bbc1164af553d5e154858481bcb2cc0495a2af0e980db5d115c3c290d5", "same_sha256": "2fba98e40b47e897b283813344fc17d83d5226172935df4f01131db42d16a88d", "cross_sha256": "a4a58258f86c2e42f501880e677d76acfd58dcdadb497aed751d5df959fe0f4c"}, {"rank": 13, "case": "case_13", "key": "qwen35_talking_059239_000", "lang": "zh", "age_group": "young", "gender_group": "female", "prompt": "一位东亚汉族中国大陆江南吴语区青少年女性，面部正对镜头，眼神躲闪后回归直视摄像机，身穿校服扎马尾辫，身处卧室，自然晨光。 她正在倾诉考试失利，双手交叠置于胸前腹部，动作拘谨，不遮挡面部。 情绪尴尬羞愧，语速低沉。", "quality_score": 0.781765, "diversity_gain": 1.988873, "metrics": {"same_sync_c": 8.903402328491211, "same_sync_d": 6.729833602905273, "same_ssim": 0.9203297351642551, "same_psnr": 28.837348970716718, "cross_sync_c": 9.578585624694824, "cross_sync_d": 6.984509468078613, "cross_offset": 0.0}, "files": {"source": "assets/case_13/source.mp4", "same": "assets/case_13/same.mp4", "cross": "assets/case_13/cross.mp4", "audio_same": "assets/case_13/audio_same.wav", "audio_cross": "assets/case_13/audio_cross.wav"}, "thumbnail": "thumbnails/case_13.jpg", "source_sha256": "9416682783420906381246a9109fbaa75b5e67ad0fce5c54b1a0b93ea7329d23", "same_sha256": "92d71cc67a1cea5b8981a35766d30c9c487c5ca27ebeed1737c2c423ea579619", "cross_sha256": "72eb3a856c23c8698481d82e9ca2f357d91d3ab2419bb903b30ec7c0b7d3505a"}, {"rank": 14, "case": "case_14", "key": "qwen35_talking_051332_000", "lang": "zh", "age_group": "older", "gender_group": "female", "prompt": "一位八十多岁的岭南汉族老奶奶，坐在轮椅上，上半身入镜，面部正对镜头，目光温和而忧伤地直视镜头。 她身穿深色传统唐装，双手交叠放在腹部，身体微微前倾。 室内暖光，背景是模糊的老式客厅。", "quality_score": 0.583248, "diversity_gain": 0.0, "metrics": {"same_sync_c": 8.178714752197266, "same_sync_d": 6.657675266265869, "same_ssim": 0.9094109220782801, "same_psnr": 28.529091465386074, "cross_sync_c": 10.18038558959961, "cross_sync_d": 6.436227798461914, "cross_offset": 0.0}, "files": {"source": "assets/case_14/source.mp4", "same": "assets/case_14/same.mp4", "cross": "assets/case_14/cross.mp4", "audio_same": "assets/case_14/audio_same.wav", "audio_cross": "assets/case_14/audio_cross.wav"}, "thumbnail": "thumbnails/case_14.jpg", "source_sha256": "12c3b6d0b1c0ecf13a138b62bbb942b9d47ed18c15cd7940e5275de63a1470ce", "same_sha256": "f86a286a2e5c21d0113276210ef68dd77ff07b06cac0cd9e23a2bb0f046f969c", "cross_sha256": "eb34f83f9c32ffa406a84fb1a9424b53ca5a2ea94f8a5296b772b425147da985"}, {"rank": 15, "case": "case_15", "key": "qwen35_talking_010996_000", "lang": "zh", "age_group": "young", "gender_group": "unspecified", "prompt": "一位 13 至 17 岁的老挝少年，正脸面对镜头，目光恳切直视镜头，身穿整洁校服衬衫，背景为教室环境，光线略显清冷。 情绪表现出中度的担忧与焦虑，眉眼微蹙。", "quality_score": 0.481055, "diversity_gain": 2.007368, "metrics": {"same_sync_c": 7.843829154968262, "same_sync_d": 7.88053035736084, "same_ssim": 0.9303423912800067, "same_psnr": 29.871975009098822, "cross_sync_c": 9.369365692138672, "cross_sync_d": 6.696133136749268, "cross_offset": 0.0}, "files": {"source": "assets/case_15/source.mp4", "same": "assets/case_15/same.mp4", "cross": "assets/case_15/cross.mp4", "audio_same": "assets/case_15/audio_same.wav", "audio_cross": "assets/case_15/audio_cross.wav"}, "thumbnail": "thumbnails/case_15.jpg", "source_sha256": "21a22f0fec6c6c44c58cd387689c7fbb54652885abaa58289bccfc540e601f38", "same_sha256": "fdbbd13ce8c6d40727647d7b3d7c94d533cb5ddc05aa842586d58b5bf485e6af", "cross_sha256": "eccc11a93fb255042b8b69074f629090fc84e3c6fea961f8c65bb3540fab0759"}, {"rank": 16, "case": "case_16", "key": "qwen35_talking_056618_000", "lang": "zh", "age_group": "adult", "gender_group": "unspecified", "prompt": "一位 20 岁的印尼爪哇族青年，性别流动气质，化妆精致，面部正对镜头，眼神锐利直视镜头。 穿着色彩鲜艳的未来感服饰。 背景为深灰色纯色影棚，硬光打亮面部，高对比度。 右手手掌向前做出停止手势，动作果断有力，眉头紧锁，嘴角下撇。", "quality_score": 0.270823, "diversity_gain": 2.035924, "metrics": {"same_sync_c": 6.286874771118164, "same_sync_d": 8.731701850891113, "same_ssim": 0.9124406458434018, "same_psnr": 27.770008856761653, "cross_sync_c": 9.164159774780273, "cross_sync_d": 7.306971073150635, "cross_offset": 0.0}, "files": {"source": "assets/case_16/source.mp4", "same": "assets/case_16/same.mp4", "cross": "assets/case_16/cross.mp4", "audio_same": "assets/case_16/audio_same.wav", "audio_cross": "assets/case_16/audio_cross.wav"}, "thumbnail": "thumbnails/case_16.jpg", "source_sha256": "dba7b945f6c896e27741f91134d377ebf6b78676ccbe18cd027ca142ccde7cf7", "same_sha256": "d7eebaa397ba59583ebbc555f8389c4a377821e823ecd282ee9ee873f310b2fb", "cross_sha256": "325cb33803ab2104ab82db533d2efd794ff73182b0b35bce13f071ae0672d90d"}, {"rank": 17, "case": "case_17", "key": "qwen35_talking_055201_000", "lang": "zh", "age_group": "young", "gender_group": "unspecified", "prompt": "一位 6-12 岁的海湾地区阿拉伯族男童，穿着传统服饰，坐在客厅里。 双手掌心向上做出展示邀请手势，带着温和微笑，直视镜头。 他正在说中文（在华生活）：'' 半身镜头，室内暖光，背景有阿拉伯风格装饰虚化，1080p，24fps。", "quality_score": 0.252937, "diversity_gain": 2.019357, "metrics": {"same_sync_c": 9.731372833251953, "same_sync_d": 6.1094536781311035, "same_ssim": 0.9267350596020246, "same_psnr": 30.273222142610308, "cross_sync_c": 8.73487663269043, "cross_sync_d": 7.799177169799805, "cross_offset": 0.0}, "files": {"source": "assets/case_17/source.mp4", "same": "assets/case_17/same.mp4", "cross": "assets/case_17/cross.mp4", "audio_same": "assets/case_17/audio_same.wav", "audio_cross": "assets/case_17/audio_cross.wav"}, "thumbnail": "thumbnails/case_17.jpg", "source_sha256": "9d13db4faedfb7580cf827297e34648008d34503ff0c9dc8ae45b9bdcebd3850", "same_sha256": "7dd80dd2ebcb5c34368e569f82fa9383643f69fa19c57a7a6519ad73a230818a", "cross_sha256": "4af84030d57a3e51648f01044ff3fa9e0d4824300d0a8dfd62330660b200a3ab"}, {"rank": 18, "case": "case_18", "key": "qwen35_talking_085126_000", "lang": "zh", "age_group": "young", "gender_group": "unspecified", "prompt": "一位 13 至 17 岁的非裔美国非二元性别青少年，穿着连帽衫，站在街头。 半身镜头，正脸对镜头，目光锐利。 双手向两侧展开，表示无奈和诉求。 自然光，纪录片风格。 严肃警告：'' 手势在胸部高度，不遮脸。", "quality_score": 0.142755, "diversity_gain": 2.180097, "metrics": {"same_sync_c": 10.76439094543457, "same_sync_d": 5.8881378173828125, "same_ssim": 0.9073449394388032, "same_psnr": 29.684019873537903, "cross_sync_c": 8.070171356201172, "cross_sync_d": 7.44428014755249, "cross_offset": 0.0}, "files": {"source": "assets/case_18/source.mp4", "same": "assets/case_18/same.mp4", "cross": "assets/case_18/cross.mp4", "audio_same": "assets/case_18/audio_same.wav", "audio_cross": "assets/case_18/audio_cross.wav"}, "thumbnail": "thumbnails/case_18.jpg", "source_sha256": "508001e5064ad0e9a23e9f6111bcb5b62b814ce7376784e4571bdb7b036497db", "same_sha256": "5d6d8a4779d89ee898c1fa46dfd079930078130c6eeb416aeeec9c68f23ef5ac", "cross_sha256": "45faff0f56ca9ec72a41489720c4853c79d766b13db94a6a8d7775d6e935162e"}, {"rank": 19, "case": "case_19", "key": "qwen35_talking_031157_000", "lang": "zh", "age_group": "older", "gender_group": "male", "prompt": "视频生成提示：一位 80 多岁的中国北方汉族老年男性，面部有岁月痕迹，头发花白稀疏，身穿灰色休闲 T 恤。 背景为纯深灰色影棚背景，光线柔和均匀，1080p 高清，24fps。 构图为胸部以上半身镜头，人物正对镜头，眼神温和直视镜头，双手自然下垂静止于画面下方。", "quality_score": 0.116912, "diversity_gain": 2.026406, "metrics": {"same_sync_c": 7.868808269500732, "same_sync_d": 7.633912563323975, "same_ssim": 0.9302097627759681, "same_psnr": 29.279045339018055, "cross_sync_c": 8.262537002563477, "cross_sync_d": 7.008273601531982, "cross_offset": 0.0}, "files": {"source": "assets/case_19/source.mp4", "same": "assets/case_19/same.mp4", "cross": "assets/case_19/cross.mp4", "audio_same": "assets/case_19/audio_same.wav", "audio_cross": "assets/case_19/audio_cross.wav"}, "thumbnail": "thumbnails/case_19.jpg", "source_sha256": "d411ee865a69c8711430adb3856c26309fa2061401c2028189e5ec4d612bfe17", "same_sha256": "1322a3d01ac9bb67e2ac9275d1ca37564fea412f77d0a93e4cc42bb4a83c03fb", "cross_sha256": "fa601769c5dc58f773f410a42bf6aff77dbb5e7ac38789f48c55d3f01dd4847f"}, {"rank": 20, "case": "case_20", "key": "qwen35_talking_011353_000", "lang": "zh", "age_group": "young", "gender_group": "female", "prompt": "一位 7 岁的彝族小女孩，胸部以上镜头，正脸面对镜头，眼睛明亮直视镜头，笑容灿烂。 她穿着整洁的校服，佩戴红领巾，背景是明亮的教室黑板。 光线为自然晨光，肤色健康。 她的右手在胸前下方空中画圆，模拟太阳的形状，动作活泼但不遮挡脸部。 视频风格为纪录片质感，1080p, 24fps。", "quality_score": -0.048121, "diversity_gain": 2.063491, "metrics": {"same_sync_c": 8.165027618408203, "same_sync_d": 8.011831283569336, "same_ssim": 0.8829809972103959, "same_psnr": 25.977192824821266, "cross_sync_c": 8.941305160522461, "cross_sync_d": 6.695174217224121, "cross_offset": 0.0}, "files": {"source": "assets/case_20/source.mp4", "same": "assets/case_20/same.mp4", "cross": "assets/case_20/cross.mp4", "audio_same": "assets/case_20/audio_same.wav", "audio_cross": "assets/case_20/audio_cross.wav"}, "thumbnail": "thumbnails/case_20.jpg", "source_sha256": "1c9e529bd8487a57f5c6f2b6207f83df7ff8af01f7c262215cef752b2720e564", "same_sha256": "53a14835256c51ff1391d3ceb456e804e5898cc736a227f095d916614f18ba2d", "cross_sha256": "c4d4e809473b6c9a6520e6573c8f7b48b603902ee85f24f9dd14e14f980c92d4"}]};
-const EXTRA = {"title": "CausalDub", "subtitle": "Replacement-Aware Video Dubbing for Diverse Sources", "summary": "CausalDub separates visual evidence that should be preserved from articulation that must follow replacement speech, then transfers that response to a two-evaluation causal editor.", "highlights": [{"value": "2", "label": "denoising evaluations"}, {"value": "4", "label": "source regimes"}, {"value": "256", "label": "source-disjoint generated videos"}, {"value": "60 s", "label": "Long-20 evaluation"}], "domains": [{"name": "HDTF", "regime": "Captured", "description": "Studio and interview footage with replacement speech.", "same": "assets/paper/domains/hdtf_same.mp4", "cross": "assets/paper/domains/hdtf_cross.mp4"}, {"name": "VoxCeleb2", "regime": "Captured", "description": "In-the-wild identity and pose variation.", "same": "assets/paper/domains/voxceleb_same.mp4", "cross": "assets/paper/domains/voxceleb_cross.mp4"}, {"name": "TalkVid", "regime": "Web", "description": "Web-video appearance, motion, and recording conditions.", "same": "assets/paper/domains/talkvid_same.mp4", "cross": "assets/paper/domains/talkvid_cross.mp4"}, {"name": "CausalDub-Bench", "regime": "Generated", "description": "Source-disjoint generated speakers from the frozen benchmark.", "source": "assets/case_03/source.mp4", "same": "assets/case_03/same.mp4", "cross": "assets/case_03/cross.mp4"}], "comparisons": [{"eyebrow": "Generated source", "title": "CausalDub-Bench", "description": "The three methods receive the same source clip and replacement speech. The source is included only as a visual reference.", "items": [{"label": "Source", "video": "assets/paper/comparisons/cdb_source.mp4"}, {"label": "LatentSync", "video": "assets/paper/comparisons/cdb_latentsync.mp4"}, {"label": "LipForcing-14B", "video": "assets/paper/comparisons/cdb_lipforcing.mp4"}, {"label": "CausalDub", "video": "assets/paper/comparisons/cdb_causaldub.mp4"}]}, {"eyebrow": "Captured source", "title": "HDTF", "description": "The three methods receive the same captured source and replacement speech, exposing synchronization and source-preservation differences.", "items": [{"label": "Source", "video": "assets/paper/comparisons/hdtf_source.mp4"}, {"label": "Wav2Lip", "video": "assets/paper/comparisons/hdtf_wav2lip.mp4"}, {"label": "LatentSync", "video": "assets/paper/comparisons/hdtf_latentsync.mp4"}, {"label": "CausalDub", "video": "assets/paper/comparisons/hdtf_causaldub.mp4"}]}], "ablations": [{"eyebrow": "Replacement-aware SFT", "title": "Reconstruction alone is not replacement control", "description": "A matched teacher intervention compares the same-audio-only control with replacement-aware refinement. Aggregate cross-audio Sync-C improves by 0.954–1.653 across the four frozen benchmarks; fidelity changes are reported separately.", "items": [{"label": "Same-audio-only control", "video": "assets/paper/ablations/sft_same_only.mp4"}, {"label": "Replacement-aware refinement", "video": "assets/paper/ablations/sft_replacement_aware.mp4"}]}, {"eyebrow": "Two-step compression", "title": "DMD recovers compression-induced quality loss", "description": "Matched two-step trajectory regression raises FVD from 8.91 to 10.84; distribution matching lowers it to 7.76. DMD is used for quality recovery, not claimed as the source of replacement control.", "items": [{"label": "Two-step trajectory regression", "video": "assets/paper/ablations/two_step_ode.mp4"}, {"label": "After distribution matching", "video": "assets/paper/ablations/two_step_dmd.mp4"}]}], "long_form": {"title": "Long execution exposes what short clips hide", "description": "All methods receive the same 60-second source and replacement audio. The continuous-cache control is shown as a limitation; source-reanchored CausalDub is the deployed protocol.", "items": [{"label": "Wav2Lip", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/wav2lip_pair14.mp4"}, {"label": "LatentSync", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/latentsync_pair14.mp4"}, {"label": "Continuous-cache CausalDub", "note": "Failure control", "kind": "failure", "video": "assets/paper/long/continuous_cache_pair14.mp4"}, {"label": "Source-reanchored CausalDub", "note": "Deployed protocol", "kind": "success", "video": "assets/paper/long/source_reanchored_pair14.mp4"}]}, "limitations": ["SyncNet confidence is not treated as proof of phoneme correctness; independent recognition is reported separately.", "Source-reanchored 60-second execution does not establish drift-free persistent generation.", "The benchmark does not cover arbitrary generator out-of-distribution behavior or universal fidelity superiority."]};
+const EXTRA = {"title": "CausalDub", "subtitle": "Replacement-Aware Video Dubbing for Diverse Sources", "summary": "CausalDub separates visual evidence that should be preserved from articulation that must follow replacement speech, then transfers that response to a two-evaluation causal editor.", "highlights": [{"value": "2", "label": "denoising evaluations"}, {"value": "4", "label": "source regimes"}, {"value": "256", "label": "source-disjoint generated videos"}, {"value": "60 s", "label": "Long-20 evaluation"}], "domains": [{"name": "HDTF", "regime": "Captured", "description": "Studio and interview footage with replacement speech.", "same": "assets/paper/domains/hdtf_same.mp4", "cross": "assets/paper/domains/hdtf_cross.mp4"}, {"name": "VoxCeleb2", "regime": "Captured", "description": "In-the-wild identity and pose variation.", "same": "assets/paper/domains/voxceleb_same.mp4", "cross": "assets/paper/domains/voxceleb_cross.mp4"}, {"name": "TalkVid", "regime": "Web", "description": "Web-video appearance, motion, and recording conditions.", "same": "assets/paper/domains/talkvid_same.mp4", "cross": "assets/paper/domains/talkvid_cross.mp4"}, {"name": "CausalDub-Bench", "regime": "Generated", "description": "Source-disjoint generated speakers from the frozen benchmark.", "source": "assets/case_03/source.mp4", "same": "assets/case_03/same.mp4", "cross": "assets/case_03/cross.mp4"}], "comparisons": [{"eyebrow": "Generated source", "title": "CausalDub-Bench", "aspect": "square", "audio": "assets/paper/comparisons/cdb_causaldub.mp4", "description": "The four methods receive the same source clip and replacement speech. The source is included only as a visual reference.", "items": [{"label": "Source", "video": "assets/paper/comparisons/cdb_source.mp4"}, {"label": "Wav2Lip", "video": "assets/paper/comparisons/cdb_wav2lip.mp4"}, {"label": "LatentSync", "video": "assets/paper/comparisons/cdb_latentsync.mp4"}, {"label": "LipForcing-14B", "video": "assets/paper/comparisons/cdb_lipforcing.mp4"}, {"label": "CausalDub", "video": "assets/paper/comparisons/cdb_causaldub.mp4"}]}, {"eyebrow": "Captured source", "title": "HDTF", "aspect": "wide", "audio": "assets/paper/comparisons/hdtf_causaldub.mp4", "description": "The four methods receive the same captured source and replacement speech, exposing synchronization and source-preservation differences.", "items": [{"label": "Source", "video": "assets/paper/comparisons/hdtf_source.mp4"}, {"label": "Wav2Lip", "video": "assets/paper/comparisons/hdtf_wav2lip.mp4"}, {"label": "LatentSync", "video": "assets/paper/comparisons/hdtf_latentsync.mp4"}, {"label": "LipForcing-14B", "video": "assets/paper/comparisons/hdtf_lipforcing.mp4"}, {"label": "CausalDub", "video": "assets/paper/comparisons/hdtf_causaldub.mp4"}]}], "ablations": [{"eyebrow": "Replacement-aware SFT", "title": "Reconstruction alone is not replacement control", "description": "Matched teacher checkpoints on HDTF-30, TalkVid-50, CausalDub-50, and VoxCeleb2-30. Replacement-aware refinement raises cross-audio Sync-C by 0.954–1.653; mixed FVD changes do not support a universal fidelity claim.", "items": [{"label": "Same-audio-only control", "video": "assets/paper/ablations/sft_same_only.mp4"}, {"label": "Replacement-aware refinement", "video": "assets/paper/ablations/sft_replacement_aware.mp4"}]}, {"eyebrow": "Two-step compression", "title": "DMD recovers compression-induced quality loss", "description": "On the frozen 256-source development split, two-step trajectory regression raises FVD from 8.91 to 10.84; distribution matching lowers it to 7.76. These are single-seed stage diagnostics, so DMD is claimed only as quality recovery.", "items": [{"label": "Two-step trajectory regression", "video": "assets/paper/ablations/two_step_ode.mp4"}, {"label": "After distribution matching", "video": "assets/paper/ablations/two_step_dmd.mp4"}]}], "long_form": {"title": "Long execution exposes what short clips hide", "description": "All methods receive the same 60-second source and replacement audio. The continuous-cache control is shown as a limitation; source-reanchored CausalDub is the deployed protocol.", "audio": "assets/paper/long/source_reanchored_pair14.mp4", "items": [{"label": "Wav2Lip", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/wav2lip_pair14.mp4"}, {"label": "LatentSync", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/latentsync_pair14.mp4"}, {"label": "Continuous-cache CausalDub", "note": "Failure control", "kind": "failure", "video": "assets/paper/long/continuous_cache_pair14.mp4"}, {"label": "Source-reanchored CausalDub", "note": "Deployed protocol", "kind": "success", "video": "assets/paper/long/source_reanchored_pair14.mp4"}]}, "limitations": ["SyncNet confidence is not treated as proof of phoneme correctness; independent recognition is reported separately.", "Source-reanchored 60-second execution does not establish drift-free persistent generation.", "The benchmark does not cover arbitrary generator out-of-distribution behavior or universal fidelity superiority."]};
 const root = document.getElementById('cases');
-let muted = true;
 let io = null;
+let activeLang = 'all';
+let visibleCount = 6;
 function esc(x){
   return String(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function media(src,label){
   if(!src) return '';
-  return `<figure><video controls muted loop playsinline preload="metadata" src="${esc(src)}"></video><figcaption>${esc(label)}</figcaption></figure>`;
+  return `<figure><video controls muted loop playsinline preload="metadata" aria-label="${esc(label)}" title="${esc(label)}" src="${esc(src)}"></video><figcaption>${esc(label)}</figcaption></figure>`;
 }
 document.getElementById('domain-grid').innerHTML=EXTRA.domains.map(x=>{
   const items=[media(x.source,'Source'),media(x.same,'Same-audio reconstruction'),media(x.cross,'Replacement speech')].filter(Boolean).join('');
   const cls=x.source?'media-grid three':'media-grid';
   return `<article class="domain-card"><div class="card-copy"><span class="tag">${esc(x.regime)}</span><h4>${esc(x.name)}</h4><p>${esc(x.description)}</p></div><div class="${cls}">${items}</div></article>`;
 }).join('');
-document.getElementById('comparison-list').innerHTML=EXTRA.comparisons.map(x=>
-  `<article class="domain-card"><div class="card-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="media-grid four">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
-).join('');
+document.getElementById('comparison-list').innerHTML=EXTRA.comparisons.map((x,i)=>{
+  const [source,...methods]=x.items;
+  return `<article class="comparison-card" data-sync-card><div class="card-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="compare-controls"><button class="group-play">Play synchronized</button><button class="ghost group-pause">Pause</button><span class="hint" style="margin:0">Shared replacement speech:</span><audio controls preload="metadata" src="${esc(x.audio)}"></audio></div><div class="compare-body ${esc(x.aspect)}"><div class="compare-source">${media(source.video,source.label)}</div><div class="compare-methods">${methods.map(v=>media(v.video,v.label)).join('')}</div></div></article>`;
+}).join('');
 document.getElementById('evidence-list').innerHTML=EXTRA.ablations.map(x=>
   `<article class="evidence-card"><div class="evidence-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="media-grid wide">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
 ).join('');
 document.getElementById('long-title').textContent=EXTRA.long_form.title;
 document.getElementById('long-description').textContent=EXTRA.long_form.description;
+document.getElementById('long-audio').src=EXTRA.long_form.audio;
 document.getElementById('long-grid').innerHTML=EXTRA.long_form.items.map(x=>
   `<article class="long-card ${esc(x.kind)}"><div class="card-copy"><span class="tag">${esc(x.note)}</span><h4>${esc(x.label)}</h4></div>${media(x.video,x.label)}</article>`
 ).join('');
 document.getElementById('limitations').innerHTML=EXTRA.limitations.map(x=>`<li>${esc(x)}</li>`).join('');
+function wireExclusiveAudio(scope=document){
+  scope.querySelectorAll('video').forEach(v=>{
+    if(v.dataset.audioWired) return;
+    v.dataset.audioWired='1';
+    v.addEventListener('volumechange',()=>{
+      if(v.muted) return;
+      document.querySelectorAll('video').forEach(other=>{if(other!==v) other.muted=true;});
+      document.querySelectorAll('audio').forEach(a=>a.pause());
+    });
+  });
+}
+function playTogether(container,audio){
+  container.querySelectorAll('video').forEach(v=>{v.currentTime=0;v.muted=true;v.play().catch(()=>{});});
+  if(audio){audio.currentTime=0;audio.play().catch(()=>{});}
+}
+function pauseTogether(container,audio){
+  container.querySelectorAll('video').forEach(v=>v.pause());
+  if(audio) audio.pause();
+}
+document.querySelectorAll('[data-sync-card]').forEach(card=>{
+  const audio=card.querySelector('audio');
+  card.querySelector('.group-play').onclick=()=>playTogether(card,audio);
+  card.querySelector('.group-pause').onclick=()=>pauseTogether(card,audio);
+});
+document.querySelector('#long .group-play').onclick=()=>playTogether(document.getElementById('long-grid'),document.getElementById('long-audio'));
+document.querySelector('#long .group-pause').onclick=()=>pauseTogether(document.getElementById('long-grid'),document.getElementById('long-audio'));
 function wireAutoplay(){
   if(io) io.disconnect();
   io = new IntersectionObserver((entries)=>{
     entries.forEach(en=>{
       const v = en.target;
       if(en.isIntersecting && en.intersectionRatio >= 0.35){
-        v.muted = muted;
         v.play().catch(()=>{});
       }else{
         v.pause();
@@ -407,35 +470,51 @@ function wireAutoplay(){
   }, {threshold:[0,0.35,0.7]});
   document.querySelectorAll('#cases video').forEach(v=>io.observe(v));
 }
-function render(lang='all'){
-  root.innerHTML='';
-  DATA.cases.filter(x=>lang==='all'||x.lang===lang).forEach(x=>{
+function render(reset=true){
+  const filtered=DATA.cases.filter(x=>activeLang==='all'||x.lang===activeLang);
+  const start=reset?0:root.children.length;
+  if(reset) root.innerHTML='';
+  filtered.slice(start,visibleCount).forEach(x=>{
     const m=x.metrics;
     const el=document.createElement('section');
     el.className='case';
-    const vattrs=`controls muted autoplay loop playsinline preload="auto"`;
+    const vattrs=`controls muted autoplay loop playsinline preload="metadata"`;
     el.innerHTML=`<div class="case-head"><div class="number">${String(x.rank).padStart(2,'0')}</div><div><div class="title">${esc(x.lang.toUpperCase())} · ${esc(x.age_group)} · ${esc(x.gender_group)}</div><div class="prompt" title="${esc(x.prompt)}">${esc(x.prompt)}</div></div><div class="metrics"><div class="metric"><b>${m.cross_sync_c.toFixed(2)}</b>Cross Sync-C</div><div class="metric"><b>${m.same_ssim.toFixed(3)}</b>Same SSIM</div><div class="metric"><b>${m.cross_sync_d.toFixed(2)}</b>Cross Sync-D</div></div></div><div class="grid"><div class="cell"><div class="label">Source <small>original</small></div><video ${vattrs} src="${x.files.source}"></video></div><div class="cell"><div class="label">Same audio <small>reconstruction</small></div><video ${vattrs} src="${x.files.same}"></video></div><div class="cell cross"><div class="label">Replacement <small>CausalDub</small></div><video ${vattrs} src="${x.files.cross}"></video></div></div>`;
     root.appendChild(el);
   });
-  document.querySelectorAll('#cases video').forEach(v=>{v.muted=muted;});
+  wireExclusiveAudio(root);
   wireAutoplay();
+  const more=document.getElementById('load-more');
+  const remaining=filtered.length-visibleCount;
+  more.hidden=remaining<=0;
+  more.textContent=remaining>0?`Load ${Math.min(6,remaining)} more cases`:'All cases loaded';
 }
 document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');
-  render(b.dataset.lang);
+  activeLang=b.dataset.lang;
+  visibleCount=6;
+  render(true);
 });
 document.getElementById('mute').onclick=()=>{
-  muted=!muted;
-  document.querySelectorAll('#cases video').forEach(v=>{v.muted=muted; if(!muted) v.play().catch(()=>{});});
-  document.getElementById('mute').textContent=muted?'Unmute videos':'Mute videos';
+  document.querySelectorAll('video').forEach(v=>v.muted=true);
+  document.querySelectorAll('audio').forEach(a=>a.pause());
 };
 document.getElementById('play').onclick=()=>document.querySelectorAll('#cases video').forEach(v=>{
   const r=v.getBoundingClientRect();
   const vis=r.top<window.innerHeight && r.bottom>0;
-  if(vis){ v.currentTime=0; v.muted=muted; v.play().catch(()=>{}); }
+  if(vis){v.currentTime=0;v.play().catch(()=>{});}
 });
-render();
+document.getElementById('load-more').onclick=()=>{visibleCount+=6;render(false);};
+const menu=document.getElementById('menu');
+const navLinks=document.getElementById('nav-links');
+menu.onclick=()=>{
+  const open=navLinks.classList.toggle('open');
+  menu.setAttribute('aria-expanded',String(open));
+};
+navLinks.querySelectorAll('a').forEach(a=>a.onclick=()=>{navLinks.classList.remove('open');menu.setAttribute('aria-expanded','false');});
+wireExclusiveAudio();
+render(true);
 </script>
 </body>
 </html>
