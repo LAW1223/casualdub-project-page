@@ -8,11 +8,15 @@ import tempfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import cv2
+import numpy as np
+
 
 PAGE = Path(__file__).resolve().parent
 PROJECT = PAGE.parent
 BENCH = PROJECT / "bench"
-ASSETS = PAGE / "assets/paper/benchmark_showcase"
+ASSET_DIRNAME = "benchmark_showcase_v3"
+ASSETS = PAGE / "assets/paper" / ASSET_DIRNAME
 MANIFEST = PAGE / "benchmark_showcase_manifest.json"
 FFMPEG = BENCH / "bin/ffmpeg"
 OURS = "r2a_dmd2"
@@ -44,29 +48,155 @@ BENCHMARKS = {
     },
 }
 
+FROZEN_TOP6 = {
+    "hdtf": [
+        ("Radio52", 1.091),
+        ("KevinMcCarthy0", 0.845),
+        ("DebFischer1", 0.695),
+        ("RobPortman", 0.597),
+        ("OlympiaSnowe", 0.441),
+        ("DianeBlack0", 0.365),
+    ],
+    "vox2": [
+        ("id03347_FKY5V8wmX5k_00046", 0.821),
+        ("id00817_cBrdF4D2zJc_00314", 0.599),
+        ("id01509_V6ZrSPkix8Y_00184", 0.503),
+        ("id08701_z8t-KFSoYLI_00469", 0.486),
+        ("id02057_m5IXuletN8Y_00352", 0.471),
+        ("id07494_1A8ZDo11tzY_00010", 0.468),
+    ],
+    "talkvid": [
+        ("videovideo8351_PvPwzmobAJw-scene11-scene5", 1.409),
+        ("videovideokUUhJtbrIwU-scene57-scene7", 1.395),
+        ("videovideof6sSM6vhWTE-scene21-scene17", 1.264),
+        ("videovideoB8WTvLo3dsU-scene17-scene4", 1.243),
+        ("videovideoSqqPLqjEA0I-scene70-scene2", 1.107),
+        ("videovideo6-198fR9Sxo-scene61-scene2", 1.102),
+    ],
+    "causaldub": [
+        ("qwen35_talking_020329_000", 1.647),
+        ("qwen35_talking_080085_000", 1.393),
+        ("qwen35_talking_076239_000", 1.293),
+        ("qwen35_talking_027616_000", 1.251),
+        ("qwen35_talking_040818_000", 1.121),
+        ("qwen35_talking_008288_000", 1.094),
+    ],
+}
+
 
 def read_jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def middle_frame_sharpness(path: Path) -> float:
+    capture = cv2.VideoCapture(str(path))
+    frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+    capture.set(cv2.CAP_PROP_POS_FRAMES, max(0, frames // 2))
+    ok, image = capture.read()
+    capture.release()
+    if not ok:
+        raise RuntimeError(f"cannot decode source frame: {path}")
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    return float(cv2.Laplacian(gray, cv2.CV_64F).var())
+
+
+def zscore(values: list[float]) -> np.ndarray:
+    array = np.asarray(values, dtype=np.float64)
+    return (array - array.mean()) / (array.std() + 1e-8)
+
+
 def common_candidates(directory: str, wav2lip: str) -> list[tuple[float, dict]]:
     items = read_jsonl(BENCH / "data" / directory / "items.jsonl")
     methods = (wav2lip, "latentsync", "lipforcing_14b_fix", OURS)
-    candidates = []
+    rows = []
     for item in items:
         key = item["key"]
-        outputs = [BENCH / "out" / directory / method / f"{key}__cross.mp4" for method in methods]
-        metric_path = BENCH / "metrics" / directory / OURS / f"{key}__cross.json"
-        if not metric_path.is_file() or not all(path.is_file() for path in outputs):
+        outputs = [
+            BENCH / "out" / directory / method / f"{key}__cross.mp4"
+            for method in methods
+        ]
+        metric_paths = [
+            BENCH / "metrics" / directory / method / f"{key}__{setting}.json"
+            for method in methods
+            for setting in ("same", "cross")
+        ]
+        if not all(path.is_file() for path in outputs + metric_paths):
             continue
-        metric = json.loads(metric_path.read_text())
-        if metric.get("sync_fail") or not isinstance(metric.get("lse_c"), (int, float)):
+        all_metrics = [json.loads(path.read_text()) for path in metric_paths]
+        if any(metric.get("sync_fail") for metric in all_metrics):
             continue
-        candidates.append((float(metric["lse_c"]), item))
-    candidates.sort(key=lambda row: (-row[0], row[1]["key"]))
-    if len(candidates) < 6:
-        raise RuntimeError(f"{directory}: only {len(candidates)} complete common candidates")
-    return candidates[:6]
+        same = json.loads(
+            (BENCH / "metrics" / directory / OURS / f"{key}__same.json").read_text()
+        )
+        cross = json.loads(
+            (BENCH / "metrics" / directory / OURS / f"{key}__cross.json").read_text()
+        )
+        required_same = ("lse_c", "lse_d", "ssim", "psnr", "lmd")
+        if not all(isinstance(same.get(field), (int, float)) for field in required_same):
+            continue
+        if not all(isinstance(cross.get(field), (int, float)) for field in ("lse_c", "lse_d")):
+            continue
+        try:
+            sharpness = middle_frame_sharpness(Path(item["video"]))
+        except RuntimeError:
+            continue
+        rows.append(
+            {
+                "item": item,
+                "same": same,
+                "cross": cross,
+                "sharpness": sharpness,
+            }
+        )
+    if len(rows) < 6:
+        raise RuntimeError(f"{directory}: only {len(rows)} complete common candidates")
+    fields = {
+        "cross_c": [row["cross"]["lse_c"] for row in rows],
+        "cross_d": [row["cross"]["lse_d"] for row in rows],
+        "same_c": [row["same"]["lse_c"] for row in rows],
+        "ssim": [row["same"]["ssim"] for row in rows],
+        "psnr": [row["same"]["psnr"] for row in rows],
+        "lmd": [row["same"]["lmd"] for row in rows],
+        "sharpness": [row["sharpness"] for row in rows],
+    }
+    normalized = {name: zscore(values) for name, values in fields.items()}
+    for index, row in enumerate(rows):
+        row["quality_score"] = float(
+            0.32 * normalized["cross_c"][index]
+            - 0.18 * normalized["cross_d"][index]
+            + 0.12 * normalized["same_c"][index]
+            + 0.17 * normalized["ssim"][index]
+            + 0.08 * normalized["psnr"][index]
+            - 0.05 * normalized["lmd"][index]
+            + 0.08 * normalized["sharpness"][index]
+            - 0.04 * abs(row["cross"].get("offset", 0))
+        )
+    rows.sort(key=lambda row: (-row["quality_score"], row["item"]["key"]))
+    return [(row["quality_score"], row["item"]) for row in rows[:6]]
+
+
+def frozen_candidates(directory: str, wav2lip: str) -> list[tuple[float, dict]]:
+    items = {
+        item["key"]: item
+        for item in read_jsonl(BENCH / "data" / directory / "items.jsonl")
+    }
+    methods = (wav2lip, "latentsync", "lipforcing_14b_fix", OURS)
+    selected = []
+    for key, quality_score in FROZEN_TOP6[directory]:
+        required = [
+            BENCH / "out" / directory / method / f"{key}__cross.mp4"
+            for method in methods
+        ] + [
+            BENCH / "metrics" / directory / method / f"{key}__{setting}.json"
+            for method in methods
+            for setting in ("same", "cross")
+        ]
+        if key not in items or not all(path.is_file() for path in required):
+            raise RuntimeError(f"{directory}/{key}: frozen selection is incomplete")
+        if any(json.loads(path.read_text()).get("sync_fail") for path in required[4:]):
+            raise RuntimeError(f"{directory}/{key}: frozen selection has a metric failure")
+        selected.append((quality_score, items[key]))
+    return selected
 
 
 def run(command: list[str]) -> None:
@@ -218,10 +348,12 @@ def main() -> None:
     for benchmark, config in BENCHMARKS.items():
         directory = config["directory"]
         wav2lip = config["wav2lip"]
-        for rank, (sync_c, item) in enumerate(common_candidates(directory, wav2lip), 1):
+        for rank, (quality_score, item) in enumerate(
+            frozen_candidates(directory, wav2lip), 1
+        ):
             key = item["key"]
             stem = f"{directory}_{rank:02d}"
-            relative_root = Path("assets/paper/benchmark_showcase") / stem
+            relative_root = Path("assets/paper") / ASSET_DIRNAME / stem
             output_root = PAGE / relative_root
             sources = {
                 "Reference video": Path(item["video"]),
@@ -253,12 +385,12 @@ def main() -> None:
                     "aspect": config["aspect"],
                     "audio": str(relative_root / audio_destination.name),
                     "description": (
-                        f"Rank {rank} by CausalDub cross-audio Sync-C ({sync_c:.2f}) "
-                        "among samples with complete outputs from all displayed methods."
+                        f"Rank {rank} by the frozen CausalDub quality score "
+                        f"({quality_score:.2f}) among the four-method scoreable intersection."
                     ),
                     "selection_rank": rank,
                     "key": key,
-                    "ours_cross_sync_c": round(sync_c, 4),
+                    "quality_score": round(quality_score, 6),
                     "items": items,
                 }
             )
@@ -273,9 +405,9 @@ def main() -> None:
             {
                 "schema": 1,
                 "selection": (
-                    "For each benchmark, top six final-model cross-audio Sync-C values "
-                    "among samples with complete Wav2Lip, LatentSync, LipForcing-14B, "
-                    "and CausalDub outputs; ties broken by key."
+                    "For each benchmark, restrict to the four-method same/cross scoreable "
+                    "intersection, then select the top six by the frozen CausalDub quality "
+                    "score from paper/select_showcase.py; ties are broken by key."
                 ),
                 "comparisons": comparisons,
             },
