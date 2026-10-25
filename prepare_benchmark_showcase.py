@@ -73,6 +73,25 @@ def run(command: list[str]) -> None:
     subprocess.run(command, check=True)
 
 
+def probe_duration(path: Path) -> float:
+    result = subprocess.run(
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-show_entries",
+            "format=duration",
+            "-of",
+            "default=nw=1:nk=1",
+            str(path),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return float(result.stdout.strip())
+
+
 def transcode_video(source: Path, destination: Path) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.is_file() and destination.stat().st_mtime >= source.stat().st_mtime:
@@ -106,9 +125,15 @@ def transcode_video(source: Path, destination: Path) -> None:
     )
 
 
-def transcode_audio(source: Path, destination: Path) -> None:
+def transcode_audio(
+    source: Path, destination: Path, duration: int = 5, force: bool = False
+) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
-    if destination.is_file() and destination.stat().st_mtime >= source.stat().st_mtime:
+    if (
+        not force
+        and destination.is_file()
+        and destination.stat().st_mtime >= source.stat().st_mtime
+    ):
         return
     run(
         [
@@ -120,7 +145,7 @@ def transcode_audio(source: Path, destination: Path) -> None:
             "-i",
             str(source),
             "-t",
-            "5",
+            str(duration),
             "-vn",
             "-c:a",
             "libmp3lame",
@@ -174,12 +199,22 @@ def prepare_long_reference() -> None:
     transcode_audio(
         output_root / "source_reanchored_pair14.mp4",
         output_root / "replacement_audio_pair14.mp3",
+        duration=60,
+        force=True,
     )
+
+
+def prepare_job(job: tuple[str, Path, Path, float | None]) -> None:
+    kind, source, destination, duration = job
+    if kind == "video":
+        transcode_video(source, destination)
+    else:
+        transcode_audio(source, destination, duration=duration or 5, force=True)
 
 
 def main() -> None:
     comparisons = []
-    jobs: list[tuple[str, Path, Path]] = []
+    jobs: list[tuple[str, Path, Path, float | None]] = []
     for benchmark, config in BENCHMARKS.items():
         directory = config["directory"]
         wav2lip = config["wav2lip"]
@@ -203,10 +238,13 @@ def main() -> None:
                     else label.lower().replace("-", "").replace(" ", "_") + ".mp4"
                 )
                 destination = output_root / filename
-                jobs.append(("video", source, destination))
+                jobs.append(("video", source, destination, None))
                 items.append({"label": label, "video": str(relative_root / filename)})
             audio_destination = output_root / "replacement_audio.mp3"
-            jobs.append(("audio", Path(item["audio_cross"]), audio_destination))
+            shared_duration = min(5.0, *(probe_duration(path) for path in sources.values()))
+            jobs.append(
+                ("audio", Path(item["audio_cross"]), audio_destination, shared_duration)
+            )
             comparisons.append(
                 {
                     "benchmark": benchmark,
@@ -226,10 +264,7 @@ def main() -> None:
             )
 
     with ThreadPoolExecutor(max_workers=8) as executor:
-        futures = [
-            executor.submit(transcode_video if kind == "video" else transcode_audio, source, destination)
-            for kind, source, destination in jobs
-        ]
+        futures = [executor.submit(prepare_job, job) for job in jobs]
         for future in futures:
             future.result()
 
