@@ -162,9 +162,11 @@ video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:conta
 .tag{display:inline-block;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
 .media-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;background:var(--line)}
 .media-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.media-grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
 .media-grid figure{min-width:0;margin:0;background:#fff}
 .media-grid figcaption{padding:8px 11px 10px;color:var(--muted);font-size:11.5px;font-weight:700}
 .media-grid.wide video{aspect-ratio:16/9}
+.comparison-list{display:grid;gap:18px}
 .evidence-list{display:grid;gap:18px}
 .evidence-card{display:grid;grid-template-columns:.75fr 1.25fr}
 .evidence-copy{padding:28px;display:flex;flex-direction:column;justify-content:center}
@@ -189,6 +191,7 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .two{grid-template-columns:1fr}
   .domain-grid,.long-grid,.evidence-card{grid-template-columns:1fr}
+  .media-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}
   .limits{grid-template-columns:1fr}
   .case-head{grid-template-columns:auto 1fr}
   .metrics{grid-column:1/-1;justify-content:flex-start}
@@ -206,6 +209,7 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     <a href="#method">Method</a>
     <a href="#results">Results</a>
     <a href="#domains">Sources</a>
+    <a href="#comparisons">Baselines</a>
     <a href="#evidence">Ablations</a>
     <a href="#long">Long-20</a>
     <a href="#videos">Videos</a>
@@ -313,6 +317,12 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   <div class="domain-grid" id="domain-grid"></div>
 </div></section>
 
+<section id="comparisons"><div class="wrap">
+  <h3>Comparison with prior methods</h3>
+  <p class="section-lead">Each row fixes the source clip and replacement speech across methods. These videos complement—not replace—the frozen aggregate metrics above.</p>
+  <div class="comparison-list" id="comparison-list"></div>
+</div></section>
+
 <section id="evidence"><div class="wrap">
   <h3>Matched interventions</h3>
   <p class="section-lead">The page separates the source of replacement control from the role of few-step quality recovery.</p>
@@ -381,13 +391,16 @@ document.getElementById('domain-grid').innerHTML=EXTRA.domains.map(x=>{
   const cls=x.source?'media-grid three':'media-grid';
   return `<article class="domain-card"><div class="card-copy"><span class="tag">${esc(x.regime)}</span><h4>${esc(x.name)}</h4><p>${esc(x.description)}</p></div><div class="${cls}">${items}</div></article>`;
 }).join('');
+document.getElementById('comparison-list').innerHTML=EXTRA.comparisons.map(x=>
+  `<article class="domain-card"><div class="card-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="media-grid four">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
+).join('');
 document.getElementById('evidence-list').innerHTML=EXTRA.ablations.map(x=>
   `<article class="evidence-card"><div class="evidence-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="media-grid wide">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
 ).join('');
 document.getElementById('long-title').textContent=EXTRA.long_form.title;
 document.getElementById('long-description').textContent=EXTRA.long_form.description;
-document.getElementById('long-grid').innerHTML=EXTRA.long_form.items.map((x,i)=>
-  `<article class="long-card ${i===0?'failure':'success'}"><div class="card-copy"><span class="tag">${esc(x.note)}</span><h4>${esc(x.label)}</h4></div>${media(x.video,x.label)}</article>`
+document.getElementById('long-grid').innerHTML=EXTRA.long_form.items.map(x=>
+  `<article class="long-card ${esc(x.kind)}"><div class="card-copy"><span class="tag">${esc(x.note)}</span><h4>${esc(x.label)}</h4></div>${media(x.video,x.label)}</article>`
 ).join('');
 document.getElementById('limitations').innerHTML=EXTRA.limitations.map(x=>`<li>${esc(x)}</li>`).join('');
 function wireAutoplay(){

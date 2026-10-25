@@ -39,6 +39,30 @@
       "cross": "assets/case_03/cross.mp4"
     }
   ],
+  "comparisons": [
+    {
+      "eyebrow": "Generated source",
+      "title": "CausalDub-Bench",
+      "description": "The three methods receive the same source clip and replacement speech. The source is included only as a visual reference.",
+      "items": [
+        {"label": "Source", "video": "assets/paper/comparisons/cdb_source.mp4"},
+        {"label": "LatentSync", "video": "assets/paper/comparisons/cdb_latentsync.mp4"},
+        {"label": "LipForcing-14B", "video": "assets/paper/comparisons/cdb_lipforcing.mp4"},
+        {"label": "CausalDub", "video": "assets/paper/comparisons/cdb_causaldub.mp4"}
+      ]
+    },
+    {
+      "eyebrow": "Captured source",
+      "title": "HDTF",
+      "description": "The three methods receive the same captured source and replacement speech, exposing synchronization and source-preservation differences.",
+      "items": [
+        {"label": "Source", "video": "assets/paper/comparisons/hdtf_source.mp4"},
+        {"label": "Wav2Lip", "video": "assets/paper/comparisons/hdtf_wav2lip.mp4"},
+        {"label": "LatentSync", "video": "assets/paper/comparisons/hdtf_latentsync.mp4"},
+        {"label": "CausalDub", "video": "assets/paper/comparisons/hdtf_causaldub.mp4"}
+      ]
+    }
+  ],
   "ablations": [
     {
       "eyebrow": "Replacement-aware SFT",
@@ -61,10 +85,12 @@
   ],
   "long_form": {
     "title": "Long execution exposes what short clips hide",
-    "description": "The source-reanchored system bounds generated-state propagation at window boundaries. The continuous-cache control is shown as a limitation: it develops late visual degradation and is not used to claim persistent causal stability.",
+    "description": "All methods receive the same 60-second source and replacement audio. The continuous-cache control is shown as a limitation; source-reanchored CausalDub is the deployed protocol.",
     "items": [
-      {"label": "Continuous-cache control", "note": "Failure control", "video": "assets/paper/long/continuous_cache_pair14.mp4"},
-      {"label": "Source-reanchored windows", "note": "Deployed protocol", "video": "assets/paper/long/source_reanchored_pair14.mp4"}
+      {"label": "Wav2Lip", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/wav2lip_pair14.mp4"},
+      {"label": "LatentSync", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/latentsync_pair14.mp4"},
+      {"label": "Continuous-cache CausalDub", "note": "Failure control", "kind": "failure", "video": "assets/paper/long/continuous_cache_pair14.mp4"},
+      {"label": "Source-reanchored CausalDub", "note": "Deployed protocol", "kind": "success", "video": "assets/paper/long/source_reanchored_pair14.mp4"}
     ]
   },
   "limitations": [
