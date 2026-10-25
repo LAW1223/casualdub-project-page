@@ -93,7 +93,7 @@
     "title": "Long execution exposes what short clips hide",
     "description": "All methods receive the same 60-second source and replacement audio. The continuous-cache control is shown as a limitation; source-reanchored CausalDub is the deployed protocol.",
     "source": "assets/paper/long/source_pair14.mp4",
-    "audio": "assets/paper/long/replacement_audio_pair14.mp3",
+    "audio": "assets/paper/long/replacement_audio_pair14_60s.mp3",
     "items": [
       {"label": "Wav2Lip", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/wav2lip_pair14.mp4"},
       {"label": "LatentSync", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/latentsync_pair14.mp4"},

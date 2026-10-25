@@ -198,7 +198,7 @@ def prepare_long_reference() -> None:
         )
     transcode_audio(
         output_root / "source_reanchored_pair14.mp4",
-        output_root / "replacement_audio_pair14.mp3",
+        output_root / "replacement_audio_pair14_60s.mp3",
         duration=60,
         force=True,
     )
@@ -240,7 +240,7 @@ def main() -> None:
                 destination = output_root / filename
                 jobs.append(("video", source, destination, None))
                 items.append({"label": label, "video": str(relative_root / filename)})
-            audio_destination = output_root / "replacement_audio.mp3"
+            audio_destination = output_root / "replacement_audio_v2.mp3"
             shared_duration = min(5.0, *(probe_duration(path) for path in sources.values()))
             jobs.append(
                 ("audio", Path(item["audio_cross"]), audio_destination, shared_duration)
