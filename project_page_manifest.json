@@ -1,7 +1,7 @@
 {
   "title": "CausalDub",
   "subtitle": "Replacement-Aware Video Dubbing for Diverse Sources",
-  "summary": "CausalDub separates visual evidence that should be preserved from articulation that must follow replacement speech, then transfers that response to a two-evaluation causal editor.",
+  "summary": "CausalDub learns a full-context replacement response with valid asymmetric supervision, transfers it to a two-evaluation causal editor, and bounds generated-state propagation with source-reanchored windows.",
   "highlights": [
     {"value": "2", "label": "denoising evaluations"},
     {"value": "4", "label": "source regimes"},
@@ -92,7 +92,8 @@
   "long_form": {
     "title": "Long execution exposes what short clips hide",
     "description": "All methods receive the same 60-second source and replacement audio. The continuous-cache control is shown as a limitation; source-reanchored CausalDub is the deployed protocol.",
-    "audio": "assets/paper/long/source_reanchored_pair14.mp4",
+    "source": "assets/paper/long/source_pair14.mp4",
+    "audio": "assets/paper/long/replacement_audio_pair14.mp3",
     "items": [
       {"label": "Wav2Lip", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/wav2lip_pair14.mp4"},
       {"label": "LatentSync", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/latentsync_pair14.mp4"},

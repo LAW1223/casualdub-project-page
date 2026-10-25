@@ -8,14 +8,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 DATA = json.loads((ROOT / "selection_manifest.json").read_text())
 EXTRA = json.loads((ROOT / "project_page_manifest.json").read_text())
+SHOWCASE = json.loads((ROOT / "benchmark_showcase_manifest.json").read_text())
+EXTRA["comparisons"] = SHOWCASE["comparisons"]
 
 HTML = r'''<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CausalDub — Guided Response Distillation for Causal Video Dubbing</title>
-<meta name="description" content="CausalDub is a causal source-video dubbing editor trained by guided response distillation.">
+<title>CausalDub — Replacement-Aware Video Dubbing for Diverse Sources</title>
+<meta name="description" content="CausalDub is a replacement-aware causal video-dubbing editor evaluated on captured, web, generated, and long-form sources.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,550;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -167,25 +169,33 @@ video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:conta
 .media-grid figure{min-width:0;margin:0;background:#fff}
 .media-grid figcaption{padding:8px 11px 10px;color:var(--muted);font-size:11.5px;font-weight:700}
 .media-grid.wide video{aspect-ratio:16/9}
+.benchmark-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.benchmark-tabs button{border-color:var(--line);background:#fff}
+.benchmark-tabs button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
 .comparison-list{display:grid;gap:18px}
 .comparison-card{overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(19,32,40,.04)}
 .compare-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0 22px 18px}
 .compare-controls audio{height:34px;max-width:280px}
-.compare-body{display:grid;grid-template-columns:minmax(160px,.55fr) minmax(0,2fr);gap:2px;background:var(--line)}
-.compare-source,.compare-methods figure{margin:0;background:#fff;min-width:0}
-.compare-methods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;background:var(--line)}
+.compare-body{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;background:var(--line)}
+.compare-body figure{margin:0;background:#fff;min-width:0}
 .compare-body video{border-radius:0}
 .compare-body.square video{aspect-ratio:1/1}
 .compare-body.wide video{aspect-ratio:16/9}
 .compare-body figcaption{padding:9px 11px 11px;color:var(--muted);font-size:11.5px;font-weight:800}
+.compare-body figure:first-child{box-shadow:inset 0 3px 0 var(--accent-2)}
+.sample-index{color:var(--muted);font-variant-numeric:tabular-nums}
 .group-play{background:var(--ink);color:#fff}
 .evidence-list{display:grid;gap:18px}
-.evidence-card{display:grid;grid-template-columns:.75fr 1.25fr}
+.evidence-card{display:block}
 .evidence-copy{padding:28px;display:flex;flex-direction:column;justify-content:center}
 .evidence-copy h4{font-size:28px;margin-bottom:12px}
-.long-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.long-reference{display:grid;grid-template-columns:minmax(260px,.8fr) 1.2fr;gap:18px;margin-bottom:18px;align-items:center}
+.long-reference figure{margin:0}
+.long-input{padding:22px}
+.long-input audio{width:100%;margin-top:10px}
+.long-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .long-card figure{margin:0}
-.long-card video{aspect-ratio:1/1}
+.long-card video{aspect-ratio:1/1;border-radius:0}
 .long-card figcaption{padding:8px 12px 12px;color:var(--muted);font-size:11.5px;font-weight:700}
 .long-card.failure{border-color:#e5c1a6}
 .long-card.success{border-color:#9dccbd}
@@ -207,8 +217,8 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .two{grid-template-columns:1fr}
   .domain-grid,.long-grid,.evidence-card{grid-template-columns:1fr}
-  .media-grid.four,.compare-methods{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .compare-body{grid-template-columns:1fr}
+  .media-grid.four,.compare-body,.long-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .long-reference{grid-template-columns:1fr}
   .limits{grid-template-columns:1fr}
   .case-head{grid-template-columns:auto 1fr}
   .metrics{grid-column:1/-1;justify-content:flex-start}
@@ -222,7 +232,7 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   .wrap{padding:0 16px}
   .hero{padding-top:38px}
   .stats{grid-template-columns:1fr 1fr}
-  .compare-methods{grid-template-columns:1fr}
+  .compare-body,.long-grid{grid-template-columns:1fr}
   .toolbar{position:static;border-radius:16px}
   table{font-size:12px}
 }
@@ -239,7 +249,6 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     <a href="#comparisons">Baselines</a>
     <a href="#evidence">Ablations</a>
     <a href="#long">Long-20</a>
-    <a href="#domains">Sources</a>
     <a href="#videos">Gallery</a>
     <a href="#cite">Cite</a>
   </div>
@@ -248,10 +257,10 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 <header class="hero"><div class="wrap">
   <div class="eyebrow">Source-video lip editing</div>
   <h1 class="hero-brand">CausalDub</h1>
-  <h2>Guided response distillation for causal video dubbing.</h2>
+  <h2>Replacement-aware video dubbing for diverse sources.</h2>
   <p class="lead">
-    Follow replacement speech while preserving identity, pose, and recorded motion
-    with two denoising updates, one audio branch, and bounded generated state.
+    Preserve the recorded person, performance, and scene while transferring
+    replacement-speech articulation to a two-evaluation causal editor.
   </p>
   <div class="cta">
     <a class="btn btn-primary" href="#comparisons">Compare methods</a>
@@ -275,15 +284,25 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   <h3>Abstract</h3>
   <div class="panel">
     <p style="margin:0;color:var(--ink)">
-      Source-video dubbing must follow replacement speech while preserving identity, pose,
-      and recorded motion. We introduce a causal editor trained by guided response distillation.
-      Counterfactual causal adaptation learns replacement-speech editing with valid reconstruction
-      targets; matched trajectory regression transfers a guided two-branch parent into a
-      single-branch student; and guided distribution matching with retention recovers visual
-      quality. The resulting editor uses a 1.3B generative backbone, two denoising updates per
-      block, and bounded generated state. Across four benchmarks it outperforms all evaluated
-      external methods in cross-audio Sync-C. On CausalDub-Bench, 8.681 is non-inferior to the
-      48-step parent’s 8.718 under a prespecified 0.10 margin.
+      Video dubbing replaces spoken content while preserving the person, performance,
+      and scene of a source video. Existing systems are predominantly trained and
+      evaluated on short, same-audio captured clips. This protocol creates three
+      deployment mismatches: the recorded mouth is invalid supervision under replacement
+      speech, captured clips do not represent web and generated sources, and short
+      evaluations do not reveal long-execution instability. We introduce CausalDub,
+      which first learns a full-context replacement response and then transfers it to a
+      causal two-step editor. Its asymmetric supervision retains full reconstruction for
+      same-audio samples but removes source-mouth targets under replacement audio while
+      preserving valid non-mouth evidence. Guided causal adaptation and trajectory
+      regression transfer the learned response into a two-evaluation autoregressive
+      student. Distribution matching recovers compression-induced visual degradation,
+      while source-reanchored windows bound generated-state propagation on long inputs.
+      We also introduce CausalDub-Bench, comprising 256 source-disjoint generated videos
+      with fixed replacement-audio pairs, and evaluate captured, web, generated, and
+      60-second sources. Across four benchmarks, matched replacement-aware refinement
+      improves cross-audio Sync-C by 0.954–1.653 with mixed FVD, and, among evaluated
+      external methods, the final model attains the highest cross-audio Sync-C on every
+      benchmark.
     </p>
   </div>
 </div></section>
@@ -341,7 +360,8 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 
 <section id="comparisons"><div class="wrap">
   <h3>Comparison with prior methods</h3>
-  <p class="section-lead">Each row fixes the source clip and replacement speech across methods. These videos complement—not replace—the frozen aggregate metrics above.</p>
+  <p class="section-lead">Six matched examples from each of four benchmarks. Every row fixes both the reference video and replacement-speech input across methods; these examples complement—not replace—the frozen aggregate metrics above.</p>
+  <div class="benchmark-tabs" id="benchmark-tabs"></div>
   <div class="comparison-list" id="comparison-list"></div>
 </div></section>
 
@@ -354,19 +374,20 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 <section id="long"><div class="wrap">
   <h3 id="long-title">Long-20</h3>
   <p class="section-lead" id="long-description"></p>
-  <div class="long-controls">
-    <button class="group-play" data-group="long-grid">Play all from start</button>
-    <button class="ghost group-pause" data-group="long-grid">Pause all</button>
-    <span class="hint" style="margin:0">Shared target speech:</span>
-    <audio id="long-audio" controls preload="metadata"></audio>
+  <div class="long-reference panel">
+    <div id="long-source"></div>
+    <div class="long-input">
+      <span class="tag">Shared inputs</span>
+      <h4>Reference video + replacement speech</h4>
+      <p class="hint">All four outputs below use this same visual reference and target audio.</p>
+      <audio id="long-audio" controls preload="metadata"></audio>
+      <div class="long-controls" style="margin-top:14px">
+        <button class="group-play" data-group="long-grid">Play all from start</button>
+        <button class="ghost group-pause" data-group="long-grid">Pause all</button>
+      </div>
+    </div>
   </div>
   <div class="long-grid" id="long-grid"></div>
-</div></section>
-
-<section id="domains"><div class="wrap">
-  <h3>Across source regimes</h3>
-  <p class="section-lead">After the matched comparisons and mechanism tests, these examples check the final two-evaluation editor across captured interviews, in-the-wild identities, web video, and source-disjoint generated speakers.</p>
-  <div class="domain-grid" id="domain-grid"></div>
 </div></section>
 
 <section id="videos"><div class="wrap">
@@ -422,21 +443,28 @@ function media(src,label){
   if(!src) return '';
   return `<figure><video controls muted loop playsinline preload="metadata" aria-label="${esc(label)}" title="${esc(label)}" src="${esc(src)}"></video><figcaption>${esc(label)}</figcaption></figure>`;
 }
-document.getElementById('domain-grid').innerHTML=EXTRA.domains.map(x=>{
-  const items=[media(x.source,'Source'),media(x.same,'Same-audio reconstruction'),media(x.cross,'Replacement speech')].filter(Boolean).join('');
-  const cls=x.source?'media-grid three':'media-grid';
-  return `<article class="domain-card"><div class="card-copy"><span class="tag">${esc(x.regime)}</span><h4>${esc(x.name)}</h4><p>${esc(x.description)}</p></div><div class="${cls}">${items}</div></article>`;
-}).join('');
-document.getElementById('comparison-list').innerHTML=EXTRA.comparisons.map((x,i)=>{
-  const [source,...methods]=x.items;
-  return `<article class="comparison-card" data-sync-card><div class="card-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="compare-controls"><button class="group-play">Play synchronized</button><button class="ghost group-pause">Pause</button><span class="hint" style="margin:0">Shared replacement speech:</span><audio controls preload="metadata" src="${esc(x.audio)}"></audio></div><div class="compare-body ${esc(x.aspect)}"><div class="compare-source">${media(source.video,source.label)}</div><div class="compare-methods">${methods.map(v=>media(v.video,v.label)).join('')}</div></div></article>`;
-}).join('');
+const benchmarks=[...new Set(EXTRA.comparisons.map(x=>x.benchmark))];
+let activeBenchmark=benchmarks[0];
+const tabs=document.getElementById('benchmark-tabs');
+tabs.innerHTML=benchmarks.map((x,i)=>`<button class="${i===0?'active':''}" data-benchmark="${esc(x)}">${esc(x)} · 6</button>`).join('');
+function renderComparisons(){
+  document.getElementById('comparison-list').innerHTML=EXTRA.comparisons.filter(x=>x.benchmark===activeBenchmark).map((x,i)=>
+    `<article class="comparison-card" data-sync-card><div class="card-copy"><span class="tag">${esc(x.regime)} · <span class="sample-index">sample ${String(i+1).padStart(2,'0')}/06</span></span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="compare-controls"><button class="group-play">Play synchronized</button><button class="ghost group-pause">Pause</button><span class="hint" style="margin:0">Replacement-speech input:</span><audio controls preload="metadata" src="${esc(x.audio)}"></audio></div><div class="compare-body ${esc(x.aspect)}">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
+  ).join('');
+  wireComparisonControls();
+  wireExclusiveAudio(document.getElementById('comparison-list'));
+}
+tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  tabs.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');activeBenchmark=b.dataset.benchmark;renderComparisons();
+});
 document.getElementById('evidence-list').innerHTML=EXTRA.ablations.map(x=>
-  `<article class="evidence-card"><div class="evidence-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="media-grid wide">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
+  `<article class="evidence-card"><div class="evidence-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div></article>`
 ).join('');
 document.getElementById('long-title').textContent=EXTRA.long_form.title;
 document.getElementById('long-description').textContent=EXTRA.long_form.description;
 document.getElementById('long-audio').src=EXTRA.long_form.audio;
+document.getElementById('long-source').innerHTML=media(EXTRA.long_form.source,'Reference video');
 document.getElementById('long-grid').innerHTML=EXTRA.long_form.items.map(x=>
   `<article class="long-card ${esc(x.kind)}"><div class="card-copy"><span class="tag">${esc(x.note)}</span><h4>${esc(x.label)}</h4></div>${media(x.video,x.label)}</article>`
 ).join('');
@@ -491,11 +519,13 @@ function pauseTogether(container,audio){
     if(audio) audio.pause();
   }
 }
-document.querySelectorAll('[data-sync-card]').forEach(card=>{
-  const audio=card.querySelector('audio');
-  card.querySelector('.group-play').onclick=()=>playTogether(card,audio);
-  card.querySelector('.group-pause').onclick=()=>pauseTogether(card,audio);
-});
+function wireComparisonControls(){
+  document.querySelectorAll('[data-sync-card]').forEach(card=>{
+    const audio=card.querySelector('audio');
+    card.querySelector('.group-play').onclick=()=>playTogether(card,audio);
+    card.querySelector('.group-pause').onclick=()=>pauseTogether(card,audio);
+  });
+}
 document.querySelector('#long .group-play').onclick=()=>playTogether(document.getElementById('long-grid'),document.getElementById('long-audio'));
 document.querySelector('#long .group-pause').onclick=()=>pauseTogether(document.getElementById('long-grid'),document.getElementById('long-audio'));
 function wireAutoplay(){
@@ -521,7 +551,7 @@ function render(reset=true){
     const el=document.createElement('section');
     el.className='case';
     const vattrs=`controls muted autoplay loop playsinline preload="metadata"`;
-    el.innerHTML=`<div class="case-head"><div class="number">${String(x.rank).padStart(2,'0')}</div><div><div class="title">${esc(x.lang.toUpperCase())} · ${esc(x.age_group)} · ${esc(x.gender_group)}</div><div class="prompt" title="${esc(x.prompt)}">${esc(x.prompt)}</div></div><div class="metrics"><div class="metric"><b>${m.cross_sync_c.toFixed(2)}</b>Cross Sync-C</div><div class="metric"><b>${m.same_ssim.toFixed(3)}</b>Same SSIM</div><div class="metric"><b>${m.cross_sync_d.toFixed(2)}</b>Cross Sync-D</div></div></div><div class="grid"><div class="cell"><div class="label">Source <small>original</small></div><video ${vattrs} src="${x.files.source}"></video></div><div class="cell"><div class="label">Same audio <small>reconstruction</small></div><video ${vattrs} src="${x.files.same}"></video></div><div class="cell cross"><div class="label">Replacement <small>CausalDub</small></div><video ${vattrs} src="${x.files.cross}"></video></div></div>`;
+    el.innerHTML=`<div class="case-head"><div class="number">${String(x.rank).padStart(2,'0')}</div><div><div class="title">${esc(x.lang.toUpperCase())} · ${esc(x.age_group)} · ${esc(x.gender_group)}</div><div class="prompt" title="${esc(x.prompt)}">${esc(x.prompt)}</div><div class="compare-controls" style="padding:10px 0 0"><span class="hint" style="margin:0">Replacement-speech input:</span><audio controls preload="metadata" src="${esc(x.files.audio_cross)}"></audio></div></div><div class="metrics"><div class="metric"><b>${m.cross_sync_c.toFixed(2)}</b>Cross Sync-C</div><div class="metric"><b>${m.same_ssim.toFixed(3)}</b>Same SSIM</div><div class="metric"><b>${m.cross_sync_d.toFixed(2)}</b>Cross Sync-D</div></div></div><div class="grid"><div class="cell"><div class="label">Reference video <small>original</small></div><video ${vattrs} src="${x.files.source}"></video></div><div class="cell"><div class="label">Same audio <small>reconstruction</small></div><video ${vattrs} src="${x.files.same}"></video></div><div class="cell cross"><div class="label">Replacement <small>CausalDub</small></div><video ${vattrs} src="${x.files.cross}"></video></div></div>`;
     root.appendChild(el);
   });
   wireExclusiveAudio(root);
@@ -556,6 +586,7 @@ menu.onclick=()=>{
 };
 navLinks.querySelectorAll('a').forEach(a=>a.onclick=()=>{navLinks.classList.remove('open');menu.setAttribute('aria-expanded','false');});
 wireExclusiveAudio();
+renderComparisons();
 render(true);
 </script>
 </body>

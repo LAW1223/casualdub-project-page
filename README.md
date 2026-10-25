@@ -1,6 +1,6 @@
 # CausalDub Project Page
 
-Static results page for **CausalDub: Guided Response Distillation for Causal Video Dubbing**.
+Static results page for **CausalDub: Replacement-Aware Video Dubbing for Diverse Sources**.
 
 ## View locally
 
@@ -12,11 +12,14 @@ Open [http://localhost:8000/](http://localhost:8000/).
 
 ## Contents
 
-- `index.html` — project page (abstract, method, results, 20-case video showcase)
+- `index.html` — project page (paper-matched abstract, method, results, and video evidence)
 - `media/` — teaser, comparison, framework, Pareto figures
 - `assets/case_XX/` — source / same / cross videos + audio
+- `assets/paper/benchmark_showcase/` — four benchmarks × six matched multi-method examples
+- `benchmark_showcase_manifest.json` — reproducible top-six common-output selections
 - `thumbnails/` — preview frames
 - `selection_manifest.json` — frozen showcase selection + metrics
+- `prepare_benchmark_showcase.py` — regenerate compact comparison media and Long-20 inputs
 - `build.py` — regenerate `index.html` from the manifest
 
 ## GitHub Pages
