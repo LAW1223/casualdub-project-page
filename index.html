@@ -440,14 +440,45 @@ function wireExclusiveAudio(scope=document){
       document.querySelectorAll('audio').forEach(a=>a.pause());
     });
   });
+  scope.querySelectorAll('audio').forEach(a=>{
+    if(a.dataset.audioWired) return;
+    a.dataset.audioWired='1';
+    a.addEventListener('play',()=>{
+      document.querySelectorAll('audio').forEach(other=>{if(other!==a) other.pause();});
+    });
+  });
+}
+let activeSync=null;
+function stopActiveSync(reset=false){
+  if(!activeSync) return;
+  clearInterval(activeSync.timer);
+  activeSync.videos.forEach(v=>{v.pause();v.loop=true;if(reset)v.currentTime=0;});
+  activeSync.audio.pause();
+  if(reset) activeSync.audio.currentTime=0;
+  activeSync=null;
 }
 function playTogether(container,audio){
-  container.querySelectorAll('video').forEach(v=>{v.currentTime=0;v.muted=true;v.play().catch(()=>{});});
-  if(audio){audio.currentTime=0;audio.play().catch(()=>{});}
+  stopActiveSync(false);
+  const videos=[...container.querySelectorAll('video')];
+  videos.forEach(v=>{v.pause();v.loop=false;v.currentTime=0;v.muted=true;});
+  audio.currentTime=0;
+  const align=()=>videos.forEach(v=>{
+    if(Math.abs(v.currentTime-audio.currentTime)>.18) v.currentTime=Math.min(audio.currentTime,v.duration||audio.currentTime);
+    if(!audio.paused && v.paused && !v.ended) v.play().catch(()=>{});
+  });
+  activeSync={videos,audio,timer:setInterval(align,250)};
+  audio.onseeking=align;
+  audio.onended=()=>stopActiveSync(true);
+  audio.onpause=()=>{if(activeSync&&activeSync.audio===audio) videos.forEach(v=>v.pause());};
+  videos.forEach(v=>v.play().catch(()=>{}));
+  audio.play().catch(()=>stopActiveSync(false));
 }
 function pauseTogether(container,audio){
-  container.querySelectorAll('video').forEach(v=>v.pause());
-  if(audio) audio.pause();
+  if(activeSync&&activeSync.audio===audio) stopActiveSync(false);
+  else{
+    container.querySelectorAll('video').forEach(v=>v.pause());
+    if(audio) audio.pause();
+  }
 }
 document.querySelectorAll('[data-sync-card]').forEach(card=>{
   const audio=card.querySelector('audio');
