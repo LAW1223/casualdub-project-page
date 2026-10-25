@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 DATA = json.loads((ROOT / "selection_manifest.json").read_text())
+EXTRA = json.loads((ROOT / "project_page_manifest.json").read_text())
 
 HTML = r'''<!doctype html>
 <html lang="en">
@@ -150,6 +151,32 @@ button.ghost{border-color:var(--line);background:#fff}
 video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:contain;border-radius:10px}
 .cross video{outline:2px solid var(--accent);outline-offset:-2px}
 .hint{font-size:12px;color:var(--muted);margin:0 0 14px}
+.domain-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.domain-card,.evidence-card,.long-card{
+  overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;
+  box-shadow:0 10px 30px rgba(19,32,40,.04)
+}
+.card-copy{padding:20px 22px 16px}
+.card-copy h4,.evidence-copy h4{font-family:Fraunces,Georgia,serif;font-size:24px;line-height:1.1;letter-spacing:-.025em;margin:0 0 7px}
+.card-copy p,.evidence-copy p{margin:0;color:var(--muted);font-size:13.5px}
+.tag{display:inline-block;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.media-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;background:var(--line)}
+.media-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.media-grid figure{min-width:0;margin:0;background:#fff}
+.media-grid figcaption{padding:8px 11px 10px;color:var(--muted);font-size:11.5px;font-weight:700}
+.media-grid.wide video{aspect-ratio:16/9}
+.evidence-list{display:grid;gap:18px}
+.evidence-card{display:grid;grid-template-columns:.75fr 1.25fr}
+.evidence-copy{padding:28px;display:flex;flex-direction:column;justify-content:center}
+.evidence-copy h4{font-size:28px;margin-bottom:12px}
+.long-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.long-card figure{margin:0}
+.long-card video{aspect-ratio:1/1}
+.long-card figcaption{padding:8px 12px 12px;color:var(--muted);font-size:11.5px;font-weight:700}
+.long-card.failure{border-color:#e5c1a6}
+.long-card.success{border-color:#9dccbd}
+.limits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0}
+.limits li{padding:18px;border-radius:12px;background:var(--soft);color:var(--muted);font-size:13px}
 
 .bib{
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;
@@ -161,6 +188,8 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 @media(max-width:900px){
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .two{grid-template-columns:1fr}
+  .domain-grid,.long-grid,.evidence-card{grid-template-columns:1fr}
+  .limits{grid-template-columns:1fr}
   .case-head{grid-template-columns:auto 1fr}
   .metrics{grid-column:1/-1;justify-content:flex-start}
   .grid{grid-template-columns:1fr}
@@ -176,6 +205,9 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     <a href="#abstract">Abstract</a>
     <a href="#method">Method</a>
     <a href="#results">Results</a>
+    <a href="#domains">Sources</a>
+    <a href="#evidence">Ablations</a>
+    <a href="#long">Long-20</a>
     <a href="#videos">Videos</a>
     <a href="#cite">Cite</a>
   </div>
@@ -275,8 +307,26 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   </div>
 </div></section>
 
+<section id="domains"><div class="wrap">
+  <h3>Across source regimes</h3>
+  <p class="section-lead">The final two-evaluation editor is shown on captured interviews, in-the-wild identities, web video, and source-disjoint generated speakers—not only CausalDub-Bench.</p>
+  <div class="domain-grid" id="domain-grid"></div>
+</div></section>
+
+<section id="evidence"><div class="wrap">
+  <h3>Matched interventions</h3>
+  <p class="section-lead">The page separates the source of replacement control from the role of few-step quality recovery.</p>
+  <div class="evidence-list" id="evidence-list"></div>
+</div></section>
+
+<section id="long"><div class="wrap">
+  <h3 id="long-title">Long-20</h3>
+  <p class="section-lead" id="long-description"></p>
+  <div class="long-grid" id="long-grid"></div>
+</div></section>
+
 <section id="videos"><div class="wrap">
-  <h3>Video showcase</h3>
+  <h3>CausalDub-Bench gallery</h3>
   <p class="section-lead">
     Twenty frozen, source-disjoint CausalDub-Bench examples (10 English / 10 Chinese),
     selected by a reproducible sync + reconstruction gate and visual farthest-point sampling—not a hand-picked top-20.
@@ -291,6 +341,11 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     <button class="sync" id="play">Replay visible</button>
   </div>
   <main id="cases"></main>
+</div></section>
+
+<section id="limits"><div class="wrap">
+  <h3>Scope and limitations</h3>
+  <ul class="limits" id="limitations"></ul>
 </div></section>
 
 <section id="cite"><div class="wrap">
@@ -310,12 +365,31 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 
 <script>
 const DATA = __DATA__;
+const EXTRA = __EXTRA__;
 const root = document.getElementById('cases');
 let muted = true;
 let io = null;
 function esc(x){
   return String(x||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+function media(src,label){
+  if(!src) return '';
+  return `<figure><video controls muted loop playsinline preload="metadata" src="${esc(src)}"></video><figcaption>${esc(label)}</figcaption></figure>`;
+}
+document.getElementById('domain-grid').innerHTML=EXTRA.domains.map(x=>{
+  const items=[media(x.source,'Source'),media(x.same,'Same-audio reconstruction'),media(x.cross,'Replacement speech')].filter(Boolean).join('');
+  const cls=x.source?'media-grid three':'media-grid';
+  return `<article class="domain-card"><div class="card-copy"><span class="tag">${esc(x.regime)}</span><h4>${esc(x.name)}</h4><p>${esc(x.description)}</p></div><div class="${cls}">${items}</div></article>`;
+}).join('');
+document.getElementById('evidence-list').innerHTML=EXTRA.ablations.map(x=>
+  `<article class="evidence-card"><div class="evidence-copy"><span class="tag">${esc(x.eyebrow)}</span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="media-grid wide">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
+).join('');
+document.getElementById('long-title').textContent=EXTRA.long_form.title;
+document.getElementById('long-description').textContent=EXTRA.long_form.description;
+document.getElementById('long-grid').innerHTML=EXTRA.long_form.items.map((x,i)=>
+  `<article class="long-card ${i===0?'failure':'success'}"><div class="card-copy"><span class="tag">${esc(x.note)}</span><h4>${esc(x.label)}</h4></div>${media(x.video,x.label)}</article>`
+).join('');
+document.getElementById('limitations').innerHTML=EXTRA.limitations.map(x=>`<li>${esc(x)}</li>`).join('');
 function wireAutoplay(){
   if(io) io.disconnect();
   io = new IntersectionObserver((entries)=>{
@@ -367,7 +441,10 @@ render();
 
 
 def main() -> None:
-    html = HTML.replace("__DATA__", json.dumps(DATA, ensure_ascii=False))
+    html = (
+        HTML.replace("__DATA__", json.dumps(DATA, ensure_ascii=False))
+        .replace("__EXTRA__", json.dumps(EXTRA, ensure_ascii=False))
+    )
     (ROOT / "index.html").write_text(html)
     print(ROOT / "index.html")
 
