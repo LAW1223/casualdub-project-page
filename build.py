@@ -469,6 +469,7 @@ document.getElementById('long-grid').innerHTML=EXTRA.long_form.items.map(x=>
   `<article class="long-card ${esc(x.kind)}"><div class="card-copy"><span class="tag">${esc(x.note)}</span><h4>${esc(x.label)}</h4></div>${media(x.video,x.label)}</article>`
 ).join('');
 document.getElementById('limitations').innerHTML=EXTRA.limitations.map(x=>`<li>${esc(x)}</li>`).join('');
+let suppressExclusiveAudio=false;
 function wireExclusiveAudio(scope=document){
   scope.querySelectorAll('video').forEach(v=>{
     if(v.dataset.audioWired) return;
@@ -479,7 +480,7 @@ function wireExclusiveAudio(scope=document){
       document.querySelectorAll('audio').forEach(a=>a.pause());
     });
     v.addEventListener('volumechange',()=>{
-      if(v.muted) return;
+      if(suppressExclusiveAudio||v.muted) return;
       document.querySelectorAll('video').forEach(other=>{if(other!==v) other.muted=true;});
       document.querySelectorAll('audio').forEach(a=>a.pause());
     });
@@ -497,10 +498,12 @@ let activeSync=null;
 function stopActiveSync(reset=false){
   if(!activeSync) return;
   clearInterval(activeSync.timer);
+  suppressExclusiveAudio=true;
   activeSync.videos.forEach((v,i)=>{
     v.pause();v.loop=true;v.muted=activeSync.mutedStates[i];
     if(reset)v.currentTime=0;
   });
+  requestAnimationFrame(()=>{suppressExclusiveAudio=false;});
   activeSync.audio.pause();
   if(reset) activeSync.audio.currentTime=0;
   activeSync=null;
