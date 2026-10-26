@@ -441,7 +441,7 @@ function esc(x){
 }
 function media(src,label){
   if(!src) return '';
-  return `<figure><video controls muted loop playsinline preload="metadata" aria-label="${esc(label)}" title="${esc(label)}" src="${esc(src)}"></video><figcaption>${esc(label)}</figcaption></figure>`;
+  return `<figure><video controls loop playsinline preload="metadata" aria-label="${esc(label)}" title="${esc(label)}" src="${esc(src)}"></video><figcaption>${esc(label)}</figcaption></figure>`;
 }
 const benchmarks=[...new Set(EXTRA.comparisons.map(x=>x.benchmark))];
 let activeBenchmark=benchmarks[0];
@@ -449,7 +449,7 @@ const tabs=document.getElementById('benchmark-tabs');
 tabs.innerHTML=benchmarks.map((x,i)=>`<button class="${i===0?'active':''}" data-benchmark="${esc(x)}">${esc(x)} · 6</button>`).join('');
 function renderComparisons(){
   document.getElementById('comparison-list').innerHTML=EXTRA.comparisons.filter(x=>x.benchmark===activeBenchmark).map((x,i)=>
-    `<article class="comparison-card" data-sync-card><div class="card-copy"><span class="tag">${esc(x.regime)} · <span class="sample-index">sample ${String(i+1).padStart(2,'0')}/06</span></span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="compare-controls"><button class="group-play">Play synchronized</button><button class="ghost group-pause">Pause</button><span class="hint" style="margin:0">Replacement-speech input:</span><audio controls preload="metadata" src="${esc(x.audio)}"></audio></div><div class="compare-body ${esc(x.aspect)}">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
+    `<article class="comparison-card" data-sync-card><div class="card-copy"><span class="tag">${esc(x.regime)} · <span class="sample-index">sample ${String(i+1).padStart(2,'0')}/06</span></span><h4>${esc(x.title)}</h4><p>${esc(x.description)}</p></div><div class="compare-controls"><button class="group-play">Play synchronized</button><button class="ghost group-pause">Pause</button><span class="hint" style="margin:0">Aligned replacement speech:</span><audio controls preload="metadata" src="${esc(x.audio)}"></audio></div><p class="hint" style="padding:0 22px;margin-top:-8px">Two modes: use synchronized playback for a shared audio clock, or play any video directly with its own audio. Starting one individual player pauses other audio.</p><div class="compare-body ${esc(x.aspect)}">${x.items.map(v=>media(v.video,v.label)).join('')}</div></article>`
   ).join('');
   wireComparisonControls();
   wireExclusiveAudio(document.getElementById('comparison-list'));
@@ -473,6 +473,11 @@ function wireExclusiveAudio(scope=document){
   scope.querySelectorAll('video').forEach(v=>{
     if(v.dataset.audioWired) return;
     v.dataset.audioWired='1';
+    v.addEventListener('play',()=>{
+      if(activeSync||v.muted) return;
+      document.querySelectorAll('video').forEach(other=>{if(other!==v) other.pause();});
+      document.querySelectorAll('audio').forEach(a=>a.pause());
+    });
     v.addEventListener('volumechange',()=>{
       if(v.muted) return;
       document.querySelectorAll('video').forEach(other=>{if(other!==v) other.muted=true;});
@@ -484,6 +489,7 @@ function wireExclusiveAudio(scope=document){
     a.dataset.audioWired='1';
     a.addEventListener('play',()=>{
       document.querySelectorAll('audio').forEach(other=>{if(other!==a) other.pause();});
+      if(!activeSync) document.querySelectorAll('video').forEach(v=>v.pause());
     });
   });
 }
@@ -491,7 +497,10 @@ let activeSync=null;
 function stopActiveSync(reset=false){
   if(!activeSync) return;
   clearInterval(activeSync.timer);
-  activeSync.videos.forEach(v=>{v.pause();v.loop=true;if(reset)v.currentTime=0;});
+  activeSync.videos.forEach((v,i)=>{
+    v.pause();v.loop=true;v.muted=activeSync.mutedStates[i];
+    if(reset)v.currentTime=0;
+  });
   activeSync.audio.pause();
   if(reset) activeSync.audio.currentTime=0;
   activeSync=null;
@@ -499,13 +508,14 @@ function stopActiveSync(reset=false){
 function playTogether(container,audio){
   stopActiveSync(false);
   const videos=[...container.querySelectorAll('video')];
+  const mutedStates=videos.map(v=>v.muted);
   videos.forEach(v=>{v.pause();v.loop=false;v.currentTime=0;v.muted=true;});
   audio.currentTime=0;
   const align=()=>videos.forEach(v=>{
     if(Math.abs(v.currentTime-audio.currentTime)>.18) v.currentTime=Math.min(audio.currentTime,v.duration||audio.currentTime);
     if(!audio.paused && v.paused && !v.ended) v.play().catch(()=>{});
   });
-  activeSync={videos,audio,timer:setInterval(align,250)};
+  activeSync={videos,audio,mutedStates,timer:setInterval(align,250)};
   audio.onseeking=align;
   audio.onended=()=>stopActiveSync(true);
   audio.onpause=()=>{if(activeSync&&activeSync.audio===audio) videos.forEach(v=>v.pause());};

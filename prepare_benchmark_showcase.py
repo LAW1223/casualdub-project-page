@@ -15,7 +15,7 @@ import numpy as np
 PAGE = Path(__file__).resolve().parent
 PROJECT = PAGE.parent
 BENCH = PROJECT / "bench"
-ASSET_DIRNAME = "benchmark_showcase_v3"
+ASSET_DIRNAME = "benchmark_showcase_v4"
 ASSETS = PAGE / "assets/paper" / ASSET_DIRNAME
 MANIFEST = PAGE / "benchmark_showcase_manifest.json"
 FFMPEG = BENCH / "bin/ffmpeg"
@@ -237,7 +237,10 @@ def transcode_video(source: Path, destination: Path) -> None:
             str(source),
             "-t",
             "5",
-            "-an",
+            "-map",
+            "0:v:0",
+            "-map",
+            "0:a:0?",
             "-vf",
             "scale='min(480,iw)':-2",
             "-c:v",
@@ -248,6 +251,12 @@ def transcode_video(source: Path, destination: Path) -> None:
             "27",
             "-pix_fmt",
             "yuv420p",
+            "-c:a",
+            "aac",
+            "-b:a",
+            "96k",
+            "-ac",
+            "1",
             "-movflags",
             "+faststart",
             str(destination),
@@ -372,18 +381,14 @@ def main() -> None:
                 destination = output_root / filename
                 jobs.append(("video", source, destination, None))
                 items.append({"label": label, "video": str(relative_root / filename)})
-            audio_destination = output_root / "replacement_audio_v2.mp3"
-            shared_duration = min(5.0, *(probe_duration(path) for path in sources.values()))
-            jobs.append(
-                ("audio", Path(item["audio_cross"]), audio_destination, shared_duration)
-            )
+            aligned_audio = relative_root / "causaldub.mp4"
             comparisons.append(
                 {
                     "benchmark": benchmark,
                     "regime": config["regime"],
                     "title": f"{benchmark} · {key}",
                     "aspect": config["aspect"],
-                    "audio": str(relative_root / audio_destination.name),
+                    "audio": str(aligned_audio),
                     "description": (
                         f"Rank {rank} by the frozen CausalDub quality score "
                         f"({quality_score:.2f}) among the four-method scoreable intersection."
