@@ -20,6 +20,7 @@ Open [http://localhost:8000/](http://localhost:8000/).
 - `thumbnails/` — preview frames
 - `selection_manifest.json` — frozen showcase selection + metrics
 - `prepare_benchmark_showcase.py` — regenerate compact comparison media and Long-20 inputs
+- `prepare_gallery_pasteback.py` — paste 16 CausalDub-Bench cases into native frames
 - `build.py` — regenerate `index.html` from the manifest
 
 ## GitHub Pages

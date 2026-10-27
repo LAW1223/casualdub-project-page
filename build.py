@@ -152,6 +152,7 @@ button.ghost{border-color:var(--line);background:#fff}
 .label{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:800;margin:0 2px 6px}
 .label small{font-weight:500;color:var(--muted)}
 video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:contain;border-radius:10px}
+.grid.native video{aspect-ratio:7/4}
 .cross video{outline:2px solid var(--accent);outline-offset:-2px}
 .hint{font-size:12px;color:var(--muted);margin:0 0 14px}
 .domain-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
@@ -407,7 +408,7 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   <p class="section-lead">
     Twenty frozen, source-disjoint CausalDub-Bench examples (10 English / 10 Chinese),
     selected by a reproducible sync + reconstruction gate and visual farthest-point sampling—not a hand-picked top-20.
-    Each case shows source, same-audio reconstruction, and replacement-speech edit.
+    Each case shows source, same-audio reconstruction, and replacement-speech edit; 16 cases paste the edited region into native 1344×768 frames, while four retain the model's 512 crop.
   </p>
   <p class="hint">Six cases load initially. Clips autoplay muted when visible; unmuting one clip automatically mutes the others.</p>
   <div class="toolbar">
@@ -593,7 +594,7 @@ function render(reset=true){
     const el=document.createElement('section');
     el.className='case';
     const vattrs=`controls muted autoplay loop playsinline preload="metadata"`;
-    el.innerHTML=`<div class="case-head"><div class="number">${String(x.rank).padStart(2,'0')}</div><div><div class="title">${esc(x.lang.toUpperCase())} · ${esc(x.age_group)} · ${esc(x.gender_group)}</div><div class="prompt" title="${esc(x.prompt)}">${esc(x.prompt)}</div><div class="compare-controls" style="padding:10px 0 0"><span class="hint" style="margin:0">Replacement-speech input:</span><audio controls preload="metadata" src="${esc(x.files.audio_cross)}"></audio></div></div><div class="metrics"><div class="metric"><b>${m.cross_sync_c.toFixed(2)}</b>Cross Sync-C</div><div class="metric"><b>${m.same_ssim.toFixed(3)}</b>Same SSIM</div><div class="metric"><b>${m.cross_sync_d.toFixed(2)}</b>Cross Sync-D</div></div></div><div class="grid"><div class="cell"><div class="label">Reference video <small>original</small></div><video ${vattrs} src="${x.files.source}"></video></div><div class="cell"><div class="label">Same audio <small>reconstruction</small></div><video ${vattrs} src="${x.files.same}"></video></div><div class="cell cross"><div class="label">Replacement <small>CausalDub</small></div><video ${vattrs} src="${x.files.cross}"></video></div></div>`;
+    el.innerHTML=`<div class="case-head"><div class="number">${String(x.rank).padStart(2,'0')}</div><div><div class="title">${esc(x.lang.toUpperCase())} · ${esc(x.age_group)} · ${esc(x.gender_group)}</div><div class="prompt" title="${esc(x.prompt)}">${esc(x.prompt)}</div><div class="compare-controls" style="padding:10px 0 0"><span class="hint" style="margin:0">Replacement-speech input:</span><audio controls preload="metadata" src="${esc(x.files.audio_cross)}"></audio></div></div><div class="metrics"><div class="metric"><b>${m.cross_sync_c.toFixed(2)}</b>Cross Sync-C</div><div class="metric"><b>${m.same_ssim.toFixed(3)}</b>Same SSIM</div><div class="metric"><b>${m.cross_sync_d.toFixed(2)}</b>Cross Sync-D</div></div></div><div class="grid ${x.presentation==='native'?'native':''}"><div class="cell"><div class="label">Reference video <small>original</small></div><video ${vattrs} src="${x.files.source}"></video></div><div class="cell"><div class="label">Same audio <small>reconstruction</small></div><video ${vattrs} src="${x.files.same}"></video></div><div class="cell cross"><div class="label">Replacement <small>CausalDub</small></div><video ${vattrs} src="${x.files.cross}"></video></div></div>`;
     root.appendChild(el);
   });
   wireExclusiveAudio(root);
