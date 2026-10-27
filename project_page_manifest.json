@@ -91,7 +91,7 @@
   ],
   "long_form": {
     "title": "Long execution exposes what short clips hide",
-    "description": "Six complete 60-second cases demonstrate source-reanchored execution. Pair 14 additionally compares public baselines and the continuous-cache control under the same source and replacement speech.",
+    "description": "Six complete 60-second cases demonstrate source-reanchored execution. Additional cases retain their native Long-20 resolutions and embed playable audio; Pair 14 retains the 512-crop multi-method comparison.",
     "source": "assets/paper/long/source_pair14.mp4",
     "audio": "assets/paper/long/replacement_audio_pair14_60s.mp3",
     "items": [

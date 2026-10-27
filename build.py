@@ -398,7 +398,7 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
   </div>
   <div class="long-grid" id="long-grid"></div>
   <h4 class="long-more-title">Five additional 60-second cases</h4>
-  <p class="long-more-lead">Each case shows the complete source video, replacement-speech input, and source-reanchored CausalDub output.</p>
+  <p class="long-more-lead">Each case keeps the native Long-20 reference resolution and embeds original speech in the reference and replacement speech in the CausalDub output.</p>
   <div class="long-examples" id="long-examples"></div>
 </div></section>
 
