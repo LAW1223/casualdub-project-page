@@ -278,9 +278,9 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     <a class="btn btn-ghost" href="#cite">BibTeX</a>
   </div>
   <div class="hero-visual">
-    <img src="media/teaser.jpg" alt="Replacement-speech editing comparison under matched source video and driving audio" width="1225" height="536">
+    <img src="media/teaser.png" alt="CausalDub replacement-speech dubbing across captured, web, generated, and long-form sources" width="2237" height="927">
   </div>
-  <p class="caption">Replacement-speech editing with two-step causal generation. All methods receive the same source video and driving audio; mouth insets compare articulation under matched conditions.</p>
+  <p class="caption">Replacement-speech dubbing across source conditions. Time-aligned frames compare captured, web, and generated inputs with CausalDub outputs; the bottom row samples a 60-second source-reanchored result.</p>
 
   <div class="stats">
     <div class="stat"><b>2</b><span>NFE per causal block</span></div>
