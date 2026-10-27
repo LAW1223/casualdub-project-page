@@ -201,6 +201,15 @@ video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:conta
 .long-card.success{border-color:#9dccbd}
 .long-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 16px}
 .long-controls audio{height:34px;max-width:320px}
+.long-more-title{font-family:Fraunces,Georgia,serif;font-size:25px;margin:32px 0 7px}
+.long-more-lead{color:var(--muted);font-size:13px;margin:0 0 16px}
+.long-examples{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.long-example{padding:0;overflow:hidden}
+.long-example-head{padding:18px 20px 12px}
+.long-example-head h4{font-family:Fraunces,Georgia,serif;font-size:22px;margin:0 0 10px}
+.long-example .compare-controls{padding:0}
+.long-example .compare-controls audio{max-width:240px}
+.long-example .media-grid video{aspect-ratio:1/1;border-radius:0}
 .load-row{display:flex;justify-content:center;padding:18px 0 0}
 .load-more{background:var(--ink);color:#fff;padding:11px 20px}
 .limits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0}
@@ -216,7 +225,7 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 @media(max-width:900px){
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .two{grid-template-columns:1fr}
-  .domain-grid,.long-grid,.evidence-card{grid-template-columns:1fr}
+  .domain-grid,.long-grid,.long-examples,.evidence-card{grid-template-columns:1fr}
   .media-grid.four,.compare-body,.long-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .long-reference{grid-template-columns:1fr}
   .limits{grid-template-columns:1fr}
@@ -388,6 +397,9 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
     </div>
   </div>
   <div class="long-grid" id="long-grid"></div>
+  <h4 class="long-more-title">Five additional 60-second cases</h4>
+  <p class="long-more-lead">Each case shows the complete source video, replacement-speech input, and source-reanchored CausalDub output.</p>
+  <div class="long-examples" id="long-examples"></div>
 </div></section>
 
 <section id="videos"><div class="wrap">
@@ -467,6 +479,23 @@ document.getElementById('long-audio').src=EXTRA.long_form.audio;
 document.getElementById('long-source').innerHTML=media(EXTRA.long_form.source,'Reference video');
 document.getElementById('long-grid').innerHTML=EXTRA.long_form.items.map(x=>
   `<article class="long-card ${esc(x.kind)}"><div class="card-copy"><span class="tag">${esc(x.note)}</span><h4>${esc(x.label)}</h4></div>${media(x.video,x.label)}</article>`
+).join('');
+document.getElementById('long-examples').innerHTML=EXTRA.long_form.additional_cases.map(x=>
+  `<article class="long-example panel" data-sync-card>
+    <div class="long-example-head">
+      <span class="tag">Source-reanchored · 60 seconds</span>
+      <h4>${esc(x.label)}</h4>
+      <div class="compare-controls">
+        <audio controls preload="metadata" src="${esc(x.audio)}"></audio>
+        <button class="group-play">Play together</button>
+        <button class="ghost group-pause">Pause</button>
+      </div>
+    </div>
+    <div class="media-grid">
+      ${media(x.source,'Reference video')}
+      ${media(x.output,'CausalDub · replacement speech','replacement')}
+    </div>
+  </article>`
 ).join('');
 document.getElementById('limitations').innerHTML=EXTRA.limitations.map(x=>`<li>${esc(x)}</li>`).join('');
 let suppressExclusiveAudio=false;

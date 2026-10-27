@@ -33,7 +33,7 @@
     {
       "name": "CausalDub-Bench",
       "regime": "Generated",
-      "description": "Source-disjoint generated speakers from the frozen benchmark.",
+      "description": "Source-disjoint generated speakers shown in the benchmark's 512×512 stable evaluation crops.",
       "source": "assets/case_03/source.mp4",
       "same": "assets/case_03/same.mp4",
       "cross": "assets/case_03/cross.mp4"
@@ -91,7 +91,7 @@
   ],
   "long_form": {
     "title": "Long execution exposes what short clips hide",
-    "description": "All methods receive the same 60-second source and replacement audio. The continuous-cache control is shown as a limitation; source-reanchored CausalDub is the deployed protocol.",
+    "description": "Six complete 60-second cases demonstrate source-reanchored execution. Pair 14 additionally compares public baselines and the continuous-cache control under the same source and replacement speech.",
     "source": "assets/paper/long/source_pair14.mp4",
     "audio": "assets/paper/long/replacement_audio_pair14_60s.mp3",
     "items": [
@@ -99,6 +99,38 @@
       {"label": "LatentSync", "note": "Baseline", "kind": "baseline", "video": "assets/paper/long/latentsync_pair14.mp4"},
       {"label": "Continuous-cache CausalDub", "note": "Failure control", "kind": "failure", "video": "assets/paper/long/continuous_cache_pair14.mp4"},
       {"label": "Source-reanchored CausalDub", "note": "Deployed protocol", "kind": "success", "video": "assets/paper/long/source_reanchored_pair14.mp4"}
+    ],
+    "additional_cases": [
+      {
+        "label": "Long-20 · Pair 03",
+        "source": "assets/paper/long/examples/pair03_source.mp4",
+        "audio": "assets/paper/long/examples/pair03_replacement.mp3",
+        "output": "assets/paper/long/examples/pair03_causaldub.mp4"
+      },
+      {
+        "label": "Long-20 · Pair 05",
+        "source": "assets/paper/long/examples/pair05_source.mp4",
+        "audio": "assets/paper/long/examples/pair05_replacement.mp3",
+        "output": "assets/paper/long/examples/pair05_causaldub.mp4"
+      },
+      {
+        "label": "Long-20 · Pair 06",
+        "source": "assets/paper/long/examples/pair06_source.mp4",
+        "audio": "assets/paper/long/examples/pair06_replacement.mp3",
+        "output": "assets/paper/long/examples/pair06_causaldub.mp4"
+      },
+      {
+        "label": "Long-20 · Pair 11",
+        "source": "assets/paper/long/examples/pair11_source.mp4",
+        "audio": "assets/paper/long/examples/pair11_replacement.mp3",
+        "output": "assets/paper/long/examples/pair11_causaldub.mp4"
+      },
+      {
+        "label": "Long-20 · Pair 18",
+        "source": "assets/paper/long/examples/pair18_source.mp4",
+        "audio": "assets/paper/long/examples/pair18_replacement.mp3",
+        "output": "assets/paper/long/examples/pair18_causaldub.mp4"
+      }
     ]
   },
   "limitations": [
