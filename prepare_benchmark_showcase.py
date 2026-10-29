@@ -22,6 +22,12 @@ FFMPEG = BENCH / "bin/ffmpeg"
 OURS = "r2a_dmd2"
 
 BENCHMARKS = {
+    "CausalDub-Bench": {
+        "directory": "causaldub",
+        "regime": "Generated source",
+        "aspect": "square",
+        "wav2lip": "wav2lip",
+    },
     "HDTF": {
         "directory": "hdtf",
         "regime": "Captured source",
@@ -39,12 +45,6 @@ BENCHMARKS = {
         "regime": "Web source",
         "aspect": "wide",
         "wav2lip": "wav2lip_rf1",
-    },
-    "CausalDub-Bench": {
-        "directory": "causaldub",
-        "regime": "Generated source",
-        "aspect": "square",
-        "wav2lip": "wav2lip",
     },
 }
 

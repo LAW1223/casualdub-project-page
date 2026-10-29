@@ -3,6 +3,204 @@
   "selection": "For each benchmark, restrict to the four-method same/cross scoreable intersection, then select the top six by the frozen CausalDub quality score from paper/select_showcase.py; ties are broken by key.",
   "comparisons": [
     {
+      "benchmark": "CausalDub-Bench",
+      "regime": "Generated source",
+      "title": "CausalDub-Bench · qwen35_talking_020329_000",
+      "aspect": "square",
+      "audio": "assets/paper/benchmark_showcase_v4/causaldub_01/causaldub.mp4",
+      "description": "Rank 1 by the frozen CausalDub quality score (1.65) among the four-method scoreable intersection.",
+      "selection_rank": 1,
+      "key": "qwen35_talking_020329_000",
+      "quality_score": 1.647,
+      "items": [
+        {
+          "label": "Reference video",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/source.mp4"
+        },
+        {
+          "label": "Wav2Lip",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/wav2lip.mp4"
+        },
+        {
+          "label": "LatentSync",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/latentsync.mp4"
+        },
+        {
+          "label": "LipForcing-14B",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/lipforcing14b.mp4"
+        },
+        {
+          "label": "CausalDub",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/causaldub.mp4"
+        }
+      ]
+    },
+    {
+      "benchmark": "CausalDub-Bench",
+      "regime": "Generated source",
+      "title": "CausalDub-Bench · qwen35_talking_080085_000",
+      "aspect": "square",
+      "audio": "assets/paper/benchmark_showcase_v4/causaldub_02/causaldub.mp4",
+      "description": "Rank 2 by the frozen CausalDub quality score (1.39) among the four-method scoreable intersection.",
+      "selection_rank": 2,
+      "key": "qwen35_talking_080085_000",
+      "quality_score": 1.393,
+      "items": [
+        {
+          "label": "Reference video",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/source.mp4"
+        },
+        {
+          "label": "Wav2Lip",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/wav2lip.mp4"
+        },
+        {
+          "label": "LatentSync",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/latentsync.mp4"
+        },
+        {
+          "label": "LipForcing-14B",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/lipforcing14b.mp4"
+        },
+        {
+          "label": "CausalDub",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/causaldub.mp4"
+        }
+      ]
+    },
+    {
+      "benchmark": "CausalDub-Bench",
+      "regime": "Generated source",
+      "title": "CausalDub-Bench · qwen35_talking_076239_000",
+      "aspect": "square",
+      "audio": "assets/paper/benchmark_showcase_v4/causaldub_03/causaldub.mp4",
+      "description": "Rank 3 by the frozen CausalDub quality score (1.29) among the four-method scoreable intersection.",
+      "selection_rank": 3,
+      "key": "qwen35_talking_076239_000",
+      "quality_score": 1.293,
+      "items": [
+        {
+          "label": "Reference video",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/source.mp4"
+        },
+        {
+          "label": "Wav2Lip",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/wav2lip.mp4"
+        },
+        {
+          "label": "LatentSync",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/latentsync.mp4"
+        },
+        {
+          "label": "LipForcing-14B",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/lipforcing14b.mp4"
+        },
+        {
+          "label": "CausalDub",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/causaldub.mp4"
+        }
+      ]
+    },
+    {
+      "benchmark": "CausalDub-Bench",
+      "regime": "Generated source",
+      "title": "CausalDub-Bench · qwen35_talking_027616_000",
+      "aspect": "square",
+      "audio": "assets/paper/benchmark_showcase_v4/causaldub_04/causaldub.mp4",
+      "description": "Rank 4 by the frozen CausalDub quality score (1.25) among the four-method scoreable intersection.",
+      "selection_rank": 4,
+      "key": "qwen35_talking_027616_000",
+      "quality_score": 1.251,
+      "items": [
+        {
+          "label": "Reference video",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/source.mp4"
+        },
+        {
+          "label": "Wav2Lip",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/wav2lip.mp4"
+        },
+        {
+          "label": "LatentSync",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/latentsync.mp4"
+        },
+        {
+          "label": "LipForcing-14B",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/lipforcing14b.mp4"
+        },
+        {
+          "label": "CausalDub",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/causaldub.mp4"
+        }
+      ]
+    },
+    {
+      "benchmark": "CausalDub-Bench",
+      "regime": "Generated source",
+      "title": "CausalDub-Bench · qwen35_talking_040818_000",
+      "aspect": "square",
+      "audio": "assets/paper/benchmark_showcase_v4/causaldub_05/causaldub.mp4",
+      "description": "Rank 5 by the frozen CausalDub quality score (1.12) among the four-method scoreable intersection.",
+      "selection_rank": 5,
+      "key": "qwen35_talking_040818_000",
+      "quality_score": 1.121,
+      "items": [
+        {
+          "label": "Reference video",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/source.mp4"
+        },
+        {
+          "label": "Wav2Lip",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/wav2lip.mp4"
+        },
+        {
+          "label": "LatentSync",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/latentsync.mp4"
+        },
+        {
+          "label": "LipForcing-14B",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/lipforcing14b.mp4"
+        },
+        {
+          "label": "CausalDub",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/causaldub.mp4"
+        }
+      ]
+    },
+    {
+      "benchmark": "CausalDub-Bench",
+      "regime": "Generated source",
+      "title": "CausalDub-Bench · qwen35_talking_008288_000",
+      "aspect": "square",
+      "audio": "assets/paper/benchmark_showcase_v4/causaldub_06/causaldub.mp4",
+      "description": "Rank 6 by the frozen CausalDub quality score (1.09) among the four-method scoreable intersection.",
+      "selection_rank": 6,
+      "key": "qwen35_talking_008288_000",
+      "quality_score": 1.094,
+      "items": [
+        {
+          "label": "Reference video",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/source.mp4"
+        },
+        {
+          "label": "Wav2Lip",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/wav2lip.mp4"
+        },
+        {
+          "label": "LatentSync",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/latentsync.mp4"
+        },
+        {
+          "label": "LipForcing-14B",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/lipforcing14b.mp4"
+        },
+        {
+          "label": "CausalDub",
+          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/causaldub.mp4"
+        }
+      ]
+    },
+    {
       "benchmark": "HDTF",
       "regime": "Captured source",
       "title": "HDTF · Radio52",
@@ -593,204 +791,6 @@
         {
           "label": "CausalDub",
           "video": "assets/paper/benchmark_showcase_v4/talkvid_06/causaldub.mp4"
-        }
-      ]
-    },
-    {
-      "benchmark": "CausalDub-Bench",
-      "regime": "Generated source",
-      "title": "CausalDub-Bench · qwen35_talking_020329_000",
-      "aspect": "square",
-      "audio": "assets/paper/benchmark_showcase_v4/causaldub_01/causaldub.mp4",
-      "description": "Rank 1 by the frozen CausalDub quality score (1.65) among the four-method scoreable intersection.",
-      "selection_rank": 1,
-      "key": "qwen35_talking_020329_000",
-      "quality_score": 1.647,
-      "items": [
-        {
-          "label": "Reference video",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/source.mp4"
-        },
-        {
-          "label": "Wav2Lip",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/wav2lip.mp4"
-        },
-        {
-          "label": "LatentSync",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/latentsync.mp4"
-        },
-        {
-          "label": "LipForcing-14B",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/lipforcing14b.mp4"
-        },
-        {
-          "label": "CausalDub",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_01/causaldub.mp4"
-        }
-      ]
-    },
-    {
-      "benchmark": "CausalDub-Bench",
-      "regime": "Generated source",
-      "title": "CausalDub-Bench · qwen35_talking_080085_000",
-      "aspect": "square",
-      "audio": "assets/paper/benchmark_showcase_v4/causaldub_02/causaldub.mp4",
-      "description": "Rank 2 by the frozen CausalDub quality score (1.39) among the four-method scoreable intersection.",
-      "selection_rank": 2,
-      "key": "qwen35_talking_080085_000",
-      "quality_score": 1.393,
-      "items": [
-        {
-          "label": "Reference video",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/source.mp4"
-        },
-        {
-          "label": "Wav2Lip",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/wav2lip.mp4"
-        },
-        {
-          "label": "LatentSync",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/latentsync.mp4"
-        },
-        {
-          "label": "LipForcing-14B",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/lipforcing14b.mp4"
-        },
-        {
-          "label": "CausalDub",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_02/causaldub.mp4"
-        }
-      ]
-    },
-    {
-      "benchmark": "CausalDub-Bench",
-      "regime": "Generated source",
-      "title": "CausalDub-Bench · qwen35_talking_076239_000",
-      "aspect": "square",
-      "audio": "assets/paper/benchmark_showcase_v4/causaldub_03/causaldub.mp4",
-      "description": "Rank 3 by the frozen CausalDub quality score (1.29) among the four-method scoreable intersection.",
-      "selection_rank": 3,
-      "key": "qwen35_talking_076239_000",
-      "quality_score": 1.293,
-      "items": [
-        {
-          "label": "Reference video",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/source.mp4"
-        },
-        {
-          "label": "Wav2Lip",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/wav2lip.mp4"
-        },
-        {
-          "label": "LatentSync",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/latentsync.mp4"
-        },
-        {
-          "label": "LipForcing-14B",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/lipforcing14b.mp4"
-        },
-        {
-          "label": "CausalDub",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_03/causaldub.mp4"
-        }
-      ]
-    },
-    {
-      "benchmark": "CausalDub-Bench",
-      "regime": "Generated source",
-      "title": "CausalDub-Bench · qwen35_talking_027616_000",
-      "aspect": "square",
-      "audio": "assets/paper/benchmark_showcase_v4/causaldub_04/causaldub.mp4",
-      "description": "Rank 4 by the frozen CausalDub quality score (1.25) among the four-method scoreable intersection.",
-      "selection_rank": 4,
-      "key": "qwen35_talking_027616_000",
-      "quality_score": 1.251,
-      "items": [
-        {
-          "label": "Reference video",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/source.mp4"
-        },
-        {
-          "label": "Wav2Lip",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/wav2lip.mp4"
-        },
-        {
-          "label": "LatentSync",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/latentsync.mp4"
-        },
-        {
-          "label": "LipForcing-14B",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/lipforcing14b.mp4"
-        },
-        {
-          "label": "CausalDub",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_04/causaldub.mp4"
-        }
-      ]
-    },
-    {
-      "benchmark": "CausalDub-Bench",
-      "regime": "Generated source",
-      "title": "CausalDub-Bench · qwen35_talking_040818_000",
-      "aspect": "square",
-      "audio": "assets/paper/benchmark_showcase_v4/causaldub_05/causaldub.mp4",
-      "description": "Rank 5 by the frozen CausalDub quality score (1.12) among the four-method scoreable intersection.",
-      "selection_rank": 5,
-      "key": "qwen35_talking_040818_000",
-      "quality_score": 1.121,
-      "items": [
-        {
-          "label": "Reference video",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/source.mp4"
-        },
-        {
-          "label": "Wav2Lip",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/wav2lip.mp4"
-        },
-        {
-          "label": "LatentSync",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/latentsync.mp4"
-        },
-        {
-          "label": "LipForcing-14B",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/lipforcing14b.mp4"
-        },
-        {
-          "label": "CausalDub",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_05/causaldub.mp4"
-        }
-      ]
-    },
-    {
-      "benchmark": "CausalDub-Bench",
-      "regime": "Generated source",
-      "title": "CausalDub-Bench · qwen35_talking_008288_000",
-      "aspect": "square",
-      "audio": "assets/paper/benchmark_showcase_v4/causaldub_06/causaldub.mp4",
-      "description": "Rank 6 by the frozen CausalDub quality score (1.09) among the four-method scoreable intersection.",
-      "selection_rank": 6,
-      "key": "qwen35_talking_008288_000",
-      "quality_score": 1.094,
-      "items": [
-        {
-          "label": "Reference video",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/source.mp4"
-        },
-        {
-          "label": "Wav2Lip",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/wav2lip.mp4"
-        },
-        {
-          "label": "LatentSync",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/latentsync.mp4"
-        },
-        {
-          "label": "LipForcing-14B",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/lipforcing14b.mp4"
-        },
-        {
-          "label": "CausalDub",
-          "video": "assets/paper/benchmark_showcase_v4/causaldub_06/causaldub.mp4"
         }
       ]
     }
