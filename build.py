@@ -18,6 +18,12 @@ HTML = r'''<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CausalDub — Replacement-Aware Video Dubbing for Diverse Sources</title>
 <meta name="description" content="CausalDub is a replacement-aware causal video-dubbing editor evaluated on captured, web, generated, and long-form sources.">
+<meta property="og:title" content="CausalDub — Replacement-Aware Video Dubbing">
+<meta property="og:description" content="A two-evaluation causal editor that follows replacement speech while preserving the source video.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="media/causaldub-og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="media/causaldub-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,550;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -28,17 +34,17 @@ HTML = r'''<!doctype html>
   --line:#d5dde1;
   --soft:#f3f6f5;
   --paper:#fbfcfc;
-  --accent:#0f766e;
-  --accent-2:#c45c26;
-  --sky:#e7f1ef;
+  --accent:#315ee7;
+  --accent-2:#8f42ee;
+  --sky:#e9edff;
   --shadow:0 18px 50px rgba(19,32,40,.08);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   margin:0;color:var(--ink);background:
-    radial-gradient(1200px 500px at 10% -10%, #dcece8 0%, transparent 55%),
-    radial-gradient(900px 420px at 90% 0%, #f3e7dc 0%, transparent 50%),
+    radial-gradient(1200px 500px at 10% -10%, #e1e8ff 0%, transparent 55%),
+    radial-gradient(900px 420px at 90% 0%, #eee2ff 0%, transparent 50%),
     var(--paper);
   font-family:Manrope,ui-sans-serif,system-ui,sans-serif;line-height:1.55;
 }
@@ -50,13 +56,22 @@ nav{
   background:rgba(251,252,252,.86);border-bottom:1px solid rgba(213,221,225,.85);
 }
 .nav-inner{display:flex;align-items:center;gap:18px;min-height:58px}
-.brand{font-weight:800;letter-spacing:-.04em;font-size:18px;color:var(--ink);text-decoration:none}
+.brand{display:inline-flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.04em;font-size:18px;color:var(--ink);text-decoration:none}
+.brand img{width:34px;height:34px;border-radius:9px;display:block}
 .nav-links{display:flex;gap:16px;margin-left:auto;flex-wrap:wrap;font-size:14px;font-weight:600}
 .nav-links a{color:var(--muted);text-decoration:none}
 .nav-links a:hover{color:var(--ink)}
 .menu-button{display:none;margin-left:auto;border-color:var(--line);background:#fff}
 
 .hero{padding:56px 0 18px}
+.hero-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,330px);gap:54px;align-items:center;margin-bottom:34px}
+.hero-copy{min-width:0}
+.hero-logo{
+  aspect-ratio:1;border-radius:28px;overflow:hidden;background:#05070d;
+  box-shadow:0 28px 70px rgba(35,48,100,.22);border:1px solid rgba(255,255,255,.08);
+  animation:rise .7s ease both;
+}
+.hero-logo img{width:100%;height:100%;display:block;object-fit:cover}
 .eyebrow{
   display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;
   letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;
@@ -77,7 +92,7 @@ nav{
   border:1px solid var(--ink);text-decoration:none;transition:transform .15s ease, background .15s ease;
 }
 .btn:hover{transform:translateY(-1px);text-decoration:none}
-.btn-primary{background:var(--ink);color:#fff}
+.btn-primary{background:linear-gradient(120deg,var(--accent),var(--accent-2));border-color:transparent;color:#fff}
 .btn-ghost{background:transparent;color:var(--ink)}
 .hero-visual{
   border-radius:18px;overflow:hidden;box-shadow:var(--shadow);
@@ -122,7 +137,7 @@ table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;min-w
 th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
 th:first-child,td:first-child{text-align:left}
 th{background:var(--soft);font-size:12px;letter-spacing:.02em}
-tr.ours td{background:#eef7f5;font-weight:700}
+tr.ours td{background:#eef1ff;font-weight:700}
 .note{font-size:12.5px;color:var(--muted);margin-top:10px}
 
 .toolbar{
@@ -224,6 +239,7 @@ video{width:100%;display:block;background:#111;aspect-ratio:1/1;object-fit:conta
 footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin-top:40px}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media(max-width:900px){
+  .hero-intro{grid-template-columns:1fr minmax(200px,280px);gap:28px}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .two{grid-template-columns:1fr}
   .domain-grid,.long-grid,.long-examples,.evidence-card{grid-template-columns:1fr}
@@ -241,6 +257,8 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 @media(max-width:560px){
   .wrap{padding:0 16px}
   .hero{padding-top:38px}
+  .hero-intro{grid-template-columns:1fr}
+  .hero-logo{width:min(78vw,300px);justify-self:center}
   .stats{grid-template-columns:1fr 1fr}
   .compare-body,.long-grid{grid-template-columns:1fr}
   .toolbar{position:static;border-radius:16px}
@@ -250,7 +268,7 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 </head>
 <body>
 <nav><div class="wrap nav-inner">
-  <a class="brand" href="#">CausalDub</a>
+  <a class="brand" href="#"><img src="media/causaldub-icon.png" alt="">CausalDub</a>
   <button class="menu-button" id="menu" aria-expanded="false" aria-controls="nav-links">Sections</button>
   <div class="nav-links" id="nav-links">
     <a href="#abstract">Abstract</a>
@@ -265,17 +283,24 @@ footer{padding:40px 0 70px;color:var(--muted);font-size:13px;border-top:1px soli
 </div></nav>
 
 <header class="hero"><div class="wrap">
-  <div class="eyebrow">Source-video lip editing</div>
-  <h1 class="hero-brand">CausalDub</h1>
-  <h2>Replacement-aware video dubbing for diverse sources.</h2>
-  <p class="lead">
-    Preserve the recorded person, performance, and scene while transferring
-    replacement-speech articulation to a two-evaluation causal editor.
-  </p>
-  <div class="cta">
-    <a class="btn btn-primary" href="#comparisons">Compare methods</a>
-    <a class="btn btn-ghost" href="#results">See numbers</a>
-    <a class="btn btn-ghost" href="#cite">BibTeX</a>
+  <div class="hero-intro">
+    <div class="hero-copy">
+      <div class="eyebrow">Replacement-aware video dubbing</div>
+      <h1 class="hero-brand">CausalDub</h1>
+      <h2>Follow new speech. Preserve the source.</h2>
+      <p class="lead">
+        A two-evaluation causal editor that transfers replacement-speech articulation
+        while retaining the recorded person, performance, and scene.
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/LAW1223/causaldub">GitHub</a>
+        <a class="btn btn-ghost" href="#comparisons">Compare methods</a>
+        <a class="btn btn-ghost" href="#cite">Paper &amp; BibTeX</a>
+      </div>
+    </div>
+    <div class="hero-logo">
+      <img src="media/causaldub-logo.png" alt="CausalDub dub wordmark">
+    </div>
   </div>
   <div class="hero-visual">
     <img src="media/teaser.png" alt="CausalDub replacement-speech dubbing across captured, web, generated, and long-form sources" width="2237" height="927">
